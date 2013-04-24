@@ -2418,7 +2418,10 @@ class CaseTags(Container):
             self.assertTrue("TestTag" not in testcase.tags)
 
         def test_performance_check_tags(self):
-            """ Test prints tags from a test cases present in a test plan """
+            """ Display tags of test cases
+
+                Test prints tags from a test cases present in a test plan
+            """
             start_time = time.time()
             for case in TestPlan(self.performance.testplan):
                 log.debug(case, ": ", case.tags)
@@ -3492,8 +3495,10 @@ class TestCase(Mutable):
                         self.assertEqual(testcase.autoproposed, autoproposed)
                         self.assertEqual(testcase.manual, manual)
 
-        def test_performance_search_testcases(self):
+        def test_performance_search_testcases_and_author(self):
             """
+                Search for test cases and display authors
+
                 Test searches a pattern in all test cases and displays the result
                 with their testers
             """
@@ -3503,8 +3508,10 @@ class TestCase(Mutable):
                 log.debug("{0}: {1}".format(testcase.tester, testcase))
             _print_time(time.time() - start_time)
 
-        def test_performance_author_test_cases(self):
+        def test_performance_test_cases_and_test_plans(self):
             """
+                Show test cases from author and their test plans
+
                 Test displays test cases from specified author and also test plans
                 which contain these test cases
             """
@@ -3801,6 +3808,8 @@ class CaseRun(Mutable):
 
         def test_performance_update_caseruns(self):
             """
+                Updating multiple CaseRuns from a TestRun
+
                 Test for fetching caserun states from DB and updating them
                 focusing on the updating part
             """
@@ -3813,6 +3822,8 @@ class CaseRun(Mutable):
 
         def test_performance_test_cases_in_case_runs(self):
             """
+                Display CaseRuns in TestRuns in TestPlan(s)
+
                 Test for printing test cases that test run contains in
                 specified test plan (for example, test plans connected
                 to RHEL6.4).
