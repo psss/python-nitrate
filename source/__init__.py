@@ -120,6 +120,17 @@ data of existing objects to be tested, for example:
     product = Red Hat Enterprise Linux 6
     category = Sanity
 
+Performance test suite
+~~~~~~~~~~~
+
+    [performance]
+    testplan = 8020
+    testrun = 52167
+    testcase_search = python
+    testplan_search = rhel-6.4.0
+    author = 3592
+
+
 To exercise the whole test suite just run "python nitrate.py". To test
 only subset of tests pick the desired classes on the command line:
 
@@ -144,5 +155,7 @@ __all__ = """
         setColorMode COLOR_ON COLOR_OFF COLOR_AUTO
         set_log_level set_cache_level set_color_mode
         get_log_level get_cache_level get_color_mode
+        multicall_set multicall_get multicall_call
+        MULTICALL_ON MULTICALL_OFF
         """.split()
 

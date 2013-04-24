@@ -23,9 +23,12 @@
 import os
 import re
 import sys
+import time
 import types
+import random
 import optparse
 import unittest
+import datetime
 import xmlrpclib
 import unicodedata
 import ConfigParser
@@ -338,6 +341,14 @@ def ascii(text):
     if not isinstance(text, unicode): text = unicode(text)
     return unicodedata.normalize('NFKD', text).encode('ascii','ignore')
 
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  DateTime methods
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def _print_time(elapsed_time):
+    converted_time = str(datetime.timedelta(seconds=elapsed_time)).split('.')
+    sys.stderr.write(" {0} ".format(converted_time[0]))
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Nitrate None Class
@@ -2376,6 +2387,8 @@ class CaseTags(Container):
         def setUp(self):
             """ Set up test case from the config """
             self.testcase = Nitrate()._config.testcase
+            self.performance = Nitrate()._config.performance
+
 
         def testTagging1(self):
             """ Untagging a test case """
@@ -2403,6 +2416,13 @@ class CaseTags(Container):
             testcase.update()
             testcase = TestCase(self.testcase.id)
             self.assertTrue("TestTag" not in testcase.tags)
+
+        def test_performance_check_tags(self):
+            """ Test prints tags from a test cases present in a test plan """
+            start_time = time.time()
+            for case in TestPlan(self.performance.testplan):
+                log.debug(case, ": ", case.tags)
+            _print_time(time.time() - start_time)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3364,6 +3384,7 @@ class TestCase(Mutable):
         def setUp(self):
             """ Set up test case from the config """
             self.testcase = Nitrate()._config.testcase
+            self.performance = Nitrate()._config.performance
 
         def testCreateInvalid(self):
             """ Create a new test case (missing required parameters) """
@@ -3470,6 +3491,29 @@ class TestCase(Mutable):
                         self.assertEqual(testcase.automated, automated)
                         self.assertEqual(testcase.autoproposed, autoproposed)
                         self.assertEqual(testcase.manual, manual)
+
+        def test_performance_search_testcases(self):
+            """
+                Test searches a pattern in all test cases and displays the result
+                with their testers
+            """
+            start_time = time.time()
+            for testcase in TestCase.search(
+                    summary__contains=self.performance.testcase_search):
+                log.debug("{0}: {1}".format(testcase.tester, testcase))
+            _print_time(time.time() - start_time)
+
+        def test_performance_author_test_cases(self):
+            """
+                Test displays test cases from specified author and also test plans
+                which contain these test cases
+            """
+            start_time = time.time()
+            for testcase in TestCase.search(author=self.performance.author):
+                log.debug("{0} is in test plans:".format(testcase))
+                for testplan in testcase.testplans:
+                    log.debug("  {0}".format(testplan.name))
+            _print_time(time.time() - start_time)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3746,6 +3790,44 @@ class CaseRun(Mutable):
 
         # Update self (if modified)
         Mutable.update(self)
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    #  Case Runs Self Test
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    class _test(unittest.TestCase):
+        def setUp(self):
+            """ Set up performance test configuration from the config """
+            self.performance = Nitrate()._config.performance
+
+        def test_performance_update_caseruns(self):
+            """
+                Test for fetching caserun states from DB and updating them
+                focusing on the updating part
+            """
+            start_time = time.time()
+            for caserun in TestRun(self.performance.testplan).caseruns:
+                log.debug("{0} {1}".format(caserun.id, caserun.status))
+                caserun.status = Status(Status._statuses[random.randint(1,8)])
+                caserun.update()
+            _print_time(time.time() - start_time)
+
+        def test_performance_test_cases_in_case_runs(self):
+            """
+                Test for printing test cases that test run contains in
+                specified test plan (for example, test plans connected
+                to RHEL6.4).
+            """
+            start_time = time.time()
+            for testplan in TestPlan.search(
+                    name__contains=self.performance.testplan_search):
+                log.debug("{0}".format(testplan.name))
+                for testrun in testplan.testruns:
+                    log.debug("  {0} {1} {2}".format(testrun, testrun.manager,
+                            testrun.status))
+                    for caserun in testrun.caseruns:
+                        log.debug("    {0} {1} {2}".format(caserun,
+                                caserun.testcase, caserun.status))
+            _print_time(time.time() - start_time)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
