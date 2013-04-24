@@ -17,12 +17,7 @@ casestatus = 2
 build = 979 
 run_version = 389 
 
-
 TAGS = {0:"Apps", 1:"Tier 1", 2:"new", 3:"Tier 2", 4:"TIP"}
-
-# Import test data from .nitrate configuration file
-# ! .nitrate has to contain [init] section !
-initconfig = nitrate.Nitrate()._config.init
 
 if __name__ == "__main__":
     parser = optparse.OptionParser(
