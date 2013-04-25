@@ -155,7 +155,5 @@ __all__ = """
         setColorMode COLOR_ON COLOR_OFF COLOR_AUTO
         set_log_level set_cache_level set_color_mode
         get_log_level get_cache_level get_color_mode
-        multicall_set multicall_get multicall_call
-        MULTICALL_ON MULTICALL_OFF
         """.split()
 
