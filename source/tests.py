@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #   Python API for the Nitrate test case management system.
@@ -109,13 +110,14 @@ prepare the structure of test plans, test runs and test cases. To run
 the performance test suite use --performance command line option.
 """
 
-import sys
-import types
-import random
-import optparse
-import tempfile
-import unittest
 import datetime
+import logging
+import optparse
+import random
+import sys
+import tempfile
+import types
+import unittest
 
 from nitrate.utils import *
 from nitrate.cache import *
@@ -199,6 +201,40 @@ class UtilsTests(unittest.TestCase):
             self.assertEqual(Coloring().get(), mode)
             self.assertEqual(get_color_mode(), mode)
         Coloring().set(original)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  Logging
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+class LoggingTests(unittest.TestCase):
+    """Tests for Logging"""
+
+    def setUp(self):
+        os.environ["COLOR"] = "0"
+
+    def tearDown(self):
+        del os.environ["COLOR"]
+
+    def _test_formatter_message_encoding(self, log_msg):
+        log_record = logging.makeLogRecord({
+            "name": "nitrate",
+            "lvl": LOG_INFO,
+            "pathname": "/path/to/file",
+            "lineno": 1,
+            "msg": log_msg,
+        })
+        formatter = Logging.ColoredFormatter()
+        test_log_msg = formatter.format(log_record)
+        self.assert_(not isinstance(test_log_msg, unicode))
+        sample_log_msg = "[{0}] {1}".format(log_record.levelname, log_msg)
+        self.assertEqual(sample_log_msg, test_log_msg)
+
+    def test_formatter_message_encoding(self):
+        self._test_formatter_message_encoding('python-nitrate')
+        self._test_formatter_message_encoding("你好")
+        self._test_formatter_message_encoding("šňá")
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Build
