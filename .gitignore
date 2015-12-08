@@ -1,4 +1,5 @@
 source/version.py
 .ropeproject
-sdist
+dist
+nitrate.egg-info/
 *~
