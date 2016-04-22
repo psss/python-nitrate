@@ -881,7 +881,7 @@ class User(Nitrate):
         if inject["first_name"] and inject["last_name"]:
             self._name = inject["first_name"] + " " + inject["last_name"]
         else:
-            self._name = None
+            self._name = ""
         self._index(self.login, self.email)
 
 
