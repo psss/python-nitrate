@@ -640,7 +640,7 @@ class TestRun(Mutable):
         self._tester = User(inject["default_tester_id"])
         self._testplan = TestPlan(inject["plan_id"])
         self._time = inject["estimated_time"]
-        self._errata = inject["errata_id"]
+        self._errata = inject.get("errata_id")
         try:
             self._started = datetime.datetime.strptime(
                     inject["start_date"], "%Y-%m-%d %H:%M:%S")
