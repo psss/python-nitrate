@@ -1,6 +1,6 @@
 Name: python-nitrate
 Version: 1.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 Summary: Python API for the Nitrate test case management system
 Group: Development/Languages
@@ -11,7 +11,7 @@ Source0: http://psss.fedorapeople.org/python-nitrate/%{name}-%{version}.tar.bz2
 
 BuildArch: noarch
 BuildRequires: python-devel
-Requires: python-kerberos python-psycopg2
+Requires: python-gssapi python-psycopg2
 
 %description
 python-nitrate is a Python interface to the Nitrate test case
@@ -40,6 +40,9 @@ install -pm 644 docs/*.1.gz %{buildroot}%{_mandir}/man1
 %doc COPYING README examples
 
 %changelog
+* Mon Feb 19 2018 Robbie Harwood <rharwood@redhat.com> 1.3-3
+- Port to python-gssapi
+
 * Tue May 10 2016 Martin Frodl <mfrodl@redhat.com> 1.3-2
 - Removed obsolete project page links
 
