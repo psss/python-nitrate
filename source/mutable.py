@@ -366,11 +366,11 @@ class TestPlan(Mutable):
 
     def sortkey(self, testcase, sortkey=None):
         """ Get or set sortkey for given test case """
-        # Try already seen values 
+        # Try already seen values
         try:
-            value = self._sortkey_lookup[testcase.id]
+            cached_sortkey = self._sortkey_lookup[testcase.id]
             if sortkey is None: # no need to change value
-                return value
+                return cached_sortkey
         except AttributeError: # cache doesn't exist yet
             self._sortkey_lookup = {}
         except KeyError: # not yet in cache
@@ -390,7 +390,7 @@ class TestPlan(Mutable):
         if sortkey is not None:
             caseplan.sortkey = sortkey
         # Cache sortkey for future
-        self._sortkey_lookup[testcase.id] = sortkey
+        self._sortkey_lookup[testcase.id] = caseplan.sortkey
         # And finally return the current value
         return caseplan.sortkey
 
