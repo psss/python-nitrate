@@ -1,6 +1,6 @@
 Name: python-nitrate
-Version: 1.3
-Release: 3%{?dist}
+Version: 1.4
+Release: 1%{?dist}
 
 Summary: Python API for the Nitrate test case management system
 Group: Development/Languages
@@ -50,8 +50,11 @@ install -pm 644 docs/*.1.gz %{buildroot}%{_mandir}/man1
 %doc COPYING README examples
 
 %changelog
-* Mon Feb 19 2018 Robbie Harwood <rharwood@redhat.com> 1.3-3
-- Port to python-gssapi
+* Mon Nov 05 2018 Petr Šplíchal <psssssss@gmail.com> 1.4-1
+- Update specfile to new python packaging standards
+- Performance improvement for TestPlan.sortkey
+- Port to python-gssapi from pykerberos
+- Make TestRun errata_id default to None
 
 * Tue May 10 2016 Martin Frodl <mfrodl@redhat.com> 1.3-2
 - Removed obsolete project page links
