@@ -6,8 +6,8 @@ Summary: Python API for the Nitrate test case management system
 Group: Development/Languages
 License: LGPLv2
 
-URL: http://psss.fedorapeople.org/python-nitrate/
-Source0: http://psss.fedorapeople.org/python-nitrate/%{name}-%{version}.tar.bz2
+URL: https://github.com/psss/python-nitrate
+Source0: https://github.com/psss/python-nitrate/releases/download/%{version}/python-nitrate-%{version}.tar.bz2
 
 BuildArch: noarch
 BuildRequires: git
