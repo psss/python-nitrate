@@ -1,4 +1,4 @@
-#!/usr/bin/python -i
+#!/usr/bin/python2 -i
 
 # readline & tab completion support
 import sys, rlcompleter, readline

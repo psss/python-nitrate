@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 """ Prepare test bed - create Test Cases, Test Plans and Test Runs """
 
 import nitrate
