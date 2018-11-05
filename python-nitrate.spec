@@ -10,18 +10,28 @@ URL: http://psss.fedorapeople.org/python-nitrate/
 Source0: http://psss.fedorapeople.org/python-nitrate/%{name}-%{version}.tar.bz2
 
 BuildArch: noarch
-BuildRequires: python-devel
-Requires: python-gssapi python-psycopg2
+BuildRequires: git
+BuildRequires: python2-devel
 
-%description
-python-nitrate is a Python interface to the Nitrate test case
-management system. The package consists of a high-level Python
-module (provides natural object interface), a low-level driver
-(allows to directly access Nitrate's XMLRPC API) and a command
+%global _description\
+python-nitrate is a Python interface to the Nitrate test case\
+management system. The package consists of a high-level Python\
+module (provides natural object interface), a low-level driver\
+(allows to directly access Nitrate's XMLRPC API) and a command\
 line interpreter (useful for fast debugging and experimenting).
 
+%description %_description
+
+%package -n python2-nitrate
+Summary: %summary
+Requires: python2-psycopg2
+Requires: python2-gssapi
+%{?python_provide:%python_provide python2-nitrate}
+
+%description -n python2-nitrate %_description
+
 %prep
-%setup -q
+%autosetup -S git
 
 %build
 
@@ -33,7 +43,7 @@ install -pm 755 source/nitrate %{buildroot}%{_bindir}
 install -pm 644 source/*.py %{buildroot}%{python2_sitelib}/nitrate
 install -pm 644 docs/*.1.gz %{buildroot}%{_mandir}/man1
 
-%files
+%files -n python2-nitrate
 %{_mandir}/man1/*
 %{_bindir}/nitrate
 %{python2_sitelib}/*
