@@ -6,6 +6,7 @@ This code is based on http://landfill.bugzilla.org/testopia2/testopia/contrib/dr
 and https://fedorahosted.org/python-bugzilla/browser/bugzilla/base.py
 
 History:
+2018-02-19 Port to python-gssapi from pykerberos
 2011-12-31 bugfix https://bugzilla.redhat.com/show_bug.cgi?id=735937
 
 Example on how to access this library,
@@ -32,9 +33,10 @@ n = NitrateXmlrpc(
 n.testplan_get(10)
 """
 
-import xmlrpclib, urllib2, httplib, kerberos
+import xmlrpclib, urllib2, httplib, gssapi
 from types import *
 from datetime import datetime, time
+from base64 import b64encode, b64decode
 
 from cookielib import CookieJar
 
@@ -197,8 +199,9 @@ class SafeCookieTransport(xmlrpclib.SafeTransport,CookieTransport):
         request = CookieTransport.request_with_cookies
 
 # Stolen from FreeIPA source freeipa-1.2.1/ipa-python/krbtransport.py
-class KerbTransport(SafeCookieTransport):
-    """Handles Kerberos Negotiation authentication to an XML-RPC server."""
+# Ported to use python-gssapi
+class GSSAPITransport(SafeCookieTransport):
+    """Handles GSSAPI Negotiation (SPNEGO) authentication to an XML-RPC server."""
     
     def get_host_info(self, host):
         host, extra_headers, x509 = xmlrpclib.Transport.get_host_info(self, host)
@@ -207,19 +210,13 @@ class KerbTransport(SafeCookieTransport):
         h = host
         hostinfo = h.split(':')
         service = "HTTP@" + hostinfo[0]
-        
-        try:
-            rc, vc = kerberos.authGSSClientInit(service);
-        except kerberos.GSSError, e:
-            raise kerberos.GSSError(e)
-        
-        try:
-            kerberos.authGSSClientStep(vc, "");
-        except kerberos.GSSError, e:
-            raise kerberos.GSSError(e)
+
+        service_name = gssapi.Name(service, gssapi.NameType.hostbased_service)
+        vc = gssapi.SecurityContext(usage="initiate", name=service_name)
+        response = vc.step()
         
         extra_headers = [
-            ("Authorization", "negotiate %s" % kerberos.authGSSClientResponse(vc) )
+            ("Authorization", "negotiate %s" % b64encode(response).decode() )
         ]
         
         return host, extra_headers, x509
@@ -487,14 +484,14 @@ class NitrateXmlrpc(object):
 class NitrateKerbXmlrpc(NitrateXmlrpc):
     """
     NitrateXmlrpc - Nitrate XML-RPC client
-                    for server deployed with mod_auth_kerb
+                    for server deployed with mod_auth_gssapi
     """
     def __init__(self, url):
         if url.startswith('https://'):
-            self._transport = KerbTransport()
+            self._transport = GSSAPITransport()
         elif url.startswith('http://'):
             raise NitrateError("Encrypted https communication required for "
-                    "Kerberos authentication.\nURL provided: {0}".format(url))
+                    "GSSAPI authentication.\nURL provided: {0}".format(url))
         else:
             raise NitrateError("Unrecognized URL scheme: {0}".format(url))
         
