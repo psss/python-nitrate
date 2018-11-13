@@ -160,8 +160,8 @@ AUTHORS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 High-level Python module:
 Petr Šplíchal, Zbyšek Mráz, Martin Kyral, Lukáš Zachar, Filip
-Holec, Aleš Zelinka, Miroslav Vadkerti, Leoš Pol and Iveta
-Wiedermann.
+Holec, Aleš Zelinka, Miroslav Vadkerti, Leoš Pol, Iveta
+Wiedermann, Martin Frodl, Alexander Todorov and Robbie Harwood.
 
 Low-level XMLRPC driver:
 Airald Hapairai, David Malcolm, Will Woods, Bill Peck, Chenxiong
