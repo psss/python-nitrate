@@ -24,8 +24,11 @@ line interpreter (useful for fast debugging and experimenting).
 
 %package -n python2-nitrate
 Summary: %summary
-Requires: python2-psycopg2
-Requires: python2-gssapi
+%if 0%{?rhel}
+Requires: python-gssapi python-psycopg2
+%else
+Requires: python2-gssapi python2-psycopg2
+%endif
 %{?python_provide:%python_provide python2-nitrate}
 
 %description -n python2-nitrate %_description
