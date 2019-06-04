@@ -11,7 +11,7 @@ Source0: https://github.com/psss/python-nitrate/releases/download/%{version}/pyt
 
 BuildArch: noarch
 BuildRequires: git
-BuildRequires: python2-devel
+BuildRequires: python2-devel python2-six
 
 %global _description\
 python-nitrate is a Python interface to the Nitrate test case\

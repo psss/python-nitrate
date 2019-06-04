@@ -34,11 +34,23 @@ n.testplan_get(10)
 """
 
 import xmlrpclib, urllib2, httplib, gssapi
+from __future__ import print_function
+
+import sys
+if sys.version_info.major == 2:
+    import xmlrpclib
+    import urllib2
+    import httplib
+    from cookielib import CookieJar
+else:
+    import xmlrpc.client as xmlrpclib
+    import urllib.request as urllib2
+    import http.client as httplib
+    from http.cookiejar import CookieJar
+
 from types import *
 from datetime import datetime, time
 from base64 import b64encode, b64decode
-
-from cookielib import CookieJar
 
 VERBOSE = 0
 DEBUG = 0
@@ -87,7 +99,11 @@ class CookieTransport(xmlrpclib.Transport):
         #log.debug("request_url is %s" % request_url)
         cookie_request  = urllib2.Request(request_url)
 
-        self.send_request(h,handler,request_body)
+        if sys.version_info.major == 2:
+            self.send_request(h,handler,request_body)
+        else:
+            self.send_request(h,handler,request_body,False)
+
         self.send_host(h,host)
         self.send_cookies(h,cookie_request) # ADDED. creates cookiejar if None.
         self.send_user_agent(h)
@@ -104,7 +120,7 @@ class CookieTransport(xmlrpclib.Transport):
         if hasattr(self.cookiejar,'save'):
             try:
                 self.cookiejar.save(self.cookiejar.filename)
-            except Exception, e:
+            except Exception as e:
                 raise
                 #log.error("Couldn't write cookiefile %s: %s" % \
                 #        (self.cookiejar.filename,str(e)))
@@ -145,7 +161,11 @@ class CookieTransport(xmlrpclib.Transport):
         cookie_request  = urllib2.Request(request_url)
 
         try:
-            self.send_request(h,handler,request_body)
+            if sys.version_info.major == 2:
+                self.send_request(h,handler,request_body)
+            else:
+                self.send_request(h,handler,request_body,False)
+
             self.send_host(h,host)
             self.send_cookies(h,cookie_request) # ADDED. creates cookiejar if None.
             self.send_user_agent(h)
@@ -162,7 +182,7 @@ class CookieTransport(xmlrpclib.Transport):
             if hasattr(self.cookiejar,'save'):
                 try:
                     self.cookiejar.save(self.cookiejar.filename)
-                except Exception, e:
+                except Exception as e:
                     raise
                     #log.error("Couldn't write cookiefile %s: %s" % \
                     #        (self.cookiejar.filename,str(e)))
@@ -295,7 +315,7 @@ class NitrateXmlrpc(object):
             raise NitrateError("Unrecognized URL scheme")
 
         self._transport.cookiejar = CookieJar()
-        # print "COOKIES:", self._transport.cookiejar._cookies
+        # print("COOKIES:", self._transport.cookiejar._cookies)
         self.server = xmlrpclib.ServerProxy(
             url,
             transport = self._transport,
@@ -336,7 +356,7 @@ class NitrateXmlrpc(object):
         returns "'datetime': '2007-12-05 13:01:03'"
         """
         if value:
-            if type(value) is not type(datetime(2000,01,01,12,00,00)):
+            if not isinstance(value, datetime):
                 raise NitrateError("The option '%s' is not a valid datetime object." % option)
             return "\'%s\':\'%s\', " % (option, value.strftime("%Y-%m-%d %H:%M:%S"))
         return ''
@@ -452,11 +472,11 @@ class NitrateXmlrpc(object):
             params = ("%s" % str(arg), "%s, %s" % (params, str(arg)))[params!='']
         cmd = "self.server." + verb + "(" + params + ")"
         if DEBUG:
-            print cmd
+            print(cmd)
 
         try:
             return eval(cmd)
-        except xmlrpclib.Error, e:
+        except xmlrpclib.Error as e:
             raise NitrateXmlrpcError(verb, params, e)
 
     ############################## Build #######################################
@@ -496,7 +516,7 @@ class NitrateKerbXmlrpc(NitrateXmlrpc):
             raise NitrateError("Unrecognized URL scheme: {0}".format(url))
 
         self._transport.cookiejar = CookieJar()
-        # print "COOKIES:", self._transport.cookiejar._cookies
+        # print("COOKIES:", self._transport.cookiejar._cookies)
         self.server = xmlrpclib.ServerProxy(
             url,
             transport = self._transport,

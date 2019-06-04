@@ -68,7 +68,11 @@ status use 'print Nitrate()' which gives a short summary like this:
     Total requests handled: 0
 """
 
-import ConfigParser
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
+
 import datetime
 import logging
 import sys
@@ -208,7 +212,7 @@ class Logging(object):
         else:
             try:
                 Logging._level = Logging.MAPPING[int(os.environ["DEBUG"])]
-            except StandardError:
+            except Exception:
                 Logging._level = logging.WARN
         log.setLevel(Logging._level)
 
@@ -331,7 +335,7 @@ class Coloring(object):
             # Detect from the environment variable COLOR
             try:
                 mode = int(os.environ["COLOR"])
-            except StandardError:
+            except Exception:
                 mode = COLOR_AUTO
         elif mode < 0 or mode > 2:
             raise NitrateError("Invalid color mode '{0}'".format(mode))
@@ -410,7 +414,7 @@ class Caching(object):
             # Attempt to detect the level from the environment
             try:
                 self._level = int(os.environ["CACHE"])
-            except StandardError:
+            except Exception:
                 # Inspect the [cache] section of the config file
                 try:
                     self._level = Config().cache.level

@@ -30,6 +30,7 @@ setup(name='nitrate',
       install_requires=[
           'gssapi',
           'psycopg2',
+          'six',
           ],
       url='https://psss.fedorapeople.org/python-nitrate/',
       classifiers=[
