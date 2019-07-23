@@ -35,7 +35,7 @@ import nitrate.config as config
 from nitrate.config import log
 from nitrate.base import Nitrate, NitrateNone, _getter, _setter, _idify
 from nitrate.utils import pretty
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 from nitrate.immutable import (Build, CaseStatus, Category, PlanStatus,
         PlanType, Priority, Product, RunStatus, Status, Tag, User, Version)
 

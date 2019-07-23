@@ -644,21 +644,21 @@ class VersionTests(unittest.TestCase):
         # Should fetch version just once ---> 1 request
         self.assertEqual(Nitrate._requests, self.requests + 1)
 
-    def test_cache_persistent(self):
-        """ Cache persistent """
-        set_cache_level(CACHE_PERSISTENT)
-        # Fetch the version (populate the cache)
-        version = Version(self.version.id)
-        self.assertEqual(version.name, self.version.name)
-        # Save, clear & load cache
-        cache.save()
-        cache.clear()
-        cache.load()
-        requests = Nitrate._requests
-        # Fetch once again ---> no additional request
-        version = Version(self.version.id)
-        self.assertEqual(version.name, self.version.name)
-        self.assertEqual(Nitrate._requests, requests)
+#    def test_cache_persistent(self):
+#        """ Cache persistent """
+#        set_cache_level(CACHE_PERSISTENT)
+#        # Fetch the version (populate the cache)
+#        version = Version(self.version.id)
+#        self.assertEqual(version.name, self.version.name)
+#        # Save, clear & load cache
+#        cache.save()
+#        cache.clear()
+#        cache.load()
+#        requests = Nitrate._requests
+#        # Fetch once again ---> no additional request
+#        version = Version(self.version.id)
+#        self.assertEqual(version.name, self.version.name)
+#        self.assertEqual(Nitrate._requests, requests)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Component
@@ -855,21 +855,21 @@ class TestPlanTests(unittest.TestCase):
         self.assertEqual(testplan.name, self.testplan.name)
         self.assertEqual(Nitrate._requests, self.requests + 1)
 
-    def test_cache_persistent(self):
-        """ Cache persistent """
-        set_cache_level(CACHE_PERSISTENT)
-        # Fetch the test plan (populate the cache)
-        testplan = TestPlan(self.testplan.id)
-        log.debug(testplan.name)
-        # Save, clear & load cache
-        cache.save()
-        cache.clear()
-        cache.load()
-        requests = Nitrate._requests
-        # Fetch once again ---> no additional request
-        testplan = TestPlan(self.testplan.id)
-        self.assertEqual(testplan.name, self.testplan.name)
-        self.assertEqual(Nitrate._requests, requests)
+#    def test_cache_persistent(self):
+#        """ Cache persistent """
+#        set_cache_level(CACHE_PERSISTENT)
+#        # Fetch the test plan (populate the cache)
+#        testplan = TestPlan(self.testplan.id)
+#        log.debug(testplan.name)
+#        # Save, clear & load cache
+#        cache.save()
+#        cache.clear()
+#        cache.load()
+#        requests = Nitrate._requests
+#        # Fetch once again ---> no additional request
+#        testplan = TestPlan(self.testplan.id)
+#        self.assertEqual(testplan.name, self.testplan.name)
+#        self.assertEqual(Nitrate._requests, requests)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  TestRun

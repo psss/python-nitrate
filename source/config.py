@@ -78,7 +78,7 @@ import logging
 import sys
 import os
 
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 from nitrate.utils import color
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

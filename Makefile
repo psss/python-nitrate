@@ -59,4 +59,4 @@ push: packages
 		$(PUSH_URL)/download
 
 clean:
-	rm -rf $(TMP) build dist nitrate.egg-info source/*.pyc
+	rm -rf $(TMP) build dist nitrate.egg-info source/*.pyc source/__pycache__

@@ -33,8 +33,9 @@ n = NitrateXmlrpc(
 n.testplan_get(10)
 """
 
-import xmlrpclib, urllib2, httplib, gssapi
 from __future__ import print_function
+#import xmlrpclib, urllib2, httplib
+import gssapi
 
 import sys
 if sys.version_info.major == 2:

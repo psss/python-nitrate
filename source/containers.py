@@ -72,7 +72,7 @@ from nitrate.config import log
 from nitrate.utils import pretty, listed, sliced
 from nitrate.base import Nitrate, NitrateNone, _getter, _idify
 from nitrate.immutable import Component, Bug, Tag
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 from nitrate.mutable import (
         Mutable, TestPlan, TestRun, TestCase, CaseRun, CasePlan)
 

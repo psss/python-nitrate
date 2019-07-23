@@ -41,11 +41,11 @@ import six
 import datetime
 import nitrate.config as config
 import nitrate.utils as utils
-import nitrate.xmlrpc as xmlrpc
+import nitrate.xmlrpc_driver as xmlrpc_driver
 import nitrate.teiid as teiid
 
 from nitrate.config import log, Config
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Internal Utilities
@@ -196,13 +196,13 @@ class Nitrate(object):
                     Config().nitrate.url))
             # Plain authentication if username & password given
             try:
-                Nitrate._connection = xmlrpc.NitrateXmlrpc(
+                Nitrate._connection = xmlrpc_driver.NitrateXmlrpc(
                         Config().nitrate.username,
                         Config().nitrate.password,
                         Config().nitrate.url).server
             # Kerberos otherwise
             except AttributeError:
-                Nitrate._connection = xmlrpc.NitrateKerbXmlrpc(
+                Nitrate._connection = xmlrpc_driver.NitrateKerbXmlrpc(
                         Config().nitrate.url).server
 
         # Return existing connection

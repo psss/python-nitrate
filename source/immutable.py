@@ -34,7 +34,7 @@ import nitrate.config as config
 from nitrate.config import log
 from nitrate.base import Nitrate, NitrateNone, _getter, _idify
 from nitrate.utils import pretty, color
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Build Class

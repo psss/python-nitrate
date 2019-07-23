@@ -35,7 +35,7 @@ Use the following config snippet to enable access via psycopg2 module:
 import psycopg2
 
 from nitrate.config import log, Config
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Exceptions
