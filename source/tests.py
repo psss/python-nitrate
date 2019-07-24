@@ -113,7 +113,6 @@ from __future__ import print_function
 
 import six
 import sys
-import types
 import random
 import optparse
 import tempfile
@@ -1865,7 +1864,7 @@ if __name__ == "__main__":
     for name in dir(__main__):
         # Pick only unittest classes
         object = getattr(__main__, name)
-        if not (isinstance(object, (type, types.ClassType)) and
+        if not (isinstance(object, type) and
                 issubclass(object, unittest.TestCase)):
             continue
         # Handle test selection on the command line
@@ -1891,9 +1890,9 @@ if __name__ == "__main__":
         set_log_level(log_level)
 
     # Check for failed tests and give a short test summary
-    failures = sum([len(result.failures) for result in results.itervalues()])
-    errors = sum([len(result.errors) for result in results.itervalues()])
-    testsrun = sum([result.testsRun for result in results.itervalues()])
+    failures = sum([len(result.failures) for result in results.values()])
+    errors = sum([len(result.errors) for result in results.values()])
+    testsrun = sum([result.testsRun for result in results.values()])
     print(header("Summary"))
     print("{0} tested".format(listed(results, "class", "classes")))
     print("{0} passed".format(listed(testsrun - failures - errors, "test")))
@@ -1901,5 +1900,5 @@ if __name__ == "__main__":
     print("{0} found".format(listed(errors, "error")))
     if failures:
         print("Failures in: {0}".format(listed([name
-                for name, result in results.iteritems()
+                for name, result in results.items()
                 if not result.wasSuccessful()])))

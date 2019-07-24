@@ -194,7 +194,8 @@ class Cache(object):
     def __new__(cls, *args, **kwargs):
         """ Make sure we create a single instance only """
         if not cls._instance:
-            cls._instance = super(Cache, cls).__new__(cls, *args, **kwargs)
+            cls._instance = super(Cache, cls).__new__(cls)
+            cls._instance.__init__(*args, **kwargs)
         return cls._instance
 
     def __init__(self, filename=None):
@@ -427,7 +428,7 @@ class Cache(object):
                     listed([klass.__name__ for klass in classes])))
         # For each class re-initialize objects and remove from index
         for current_class in classes:
-            for current_object in current_class._cache.itervalues():
+            for current_object in current_class._cache.values():
                 # Reset the object to the initial state
                 current_object._init()
             current_class._cache = {}
