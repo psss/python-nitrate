@@ -471,12 +471,12 @@ class NitrateXmlrpc(object):
         params = ''
         for arg in args:
             params = ("%s" % str(arg), "%s, %s" % (params, str(arg)))[params!='']
-        cmd = "self.server." + verb + "(" + params + ")"
+
         if DEBUG:
-            print(cmd)
+            print("method %s, params %s" % (verb, params))
 
         try:
-            return eval(cmd)
+            return getattr(self.server, verb)(params)
         except xmlrpclib.Error as e:
             raise NitrateXmlrpcError(verb, params, e)
 
