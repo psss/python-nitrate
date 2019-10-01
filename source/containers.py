@@ -60,10 +60,7 @@ Container overview (objects contained are listed in brackets):
 import six
 import psycopg2
 
-try:
-    import xmlrpclib
-except ImportError:
-    import xmlrpc.client as xmlrpclib
+from six.moves import xmlrpc_client as xmlrpclib
 
 import nitrate.config as config
 import nitrate.teiid as teiid

@@ -38,16 +38,10 @@ from __future__ import print_function
 import gssapi
 import six
 
-if six.PY2:
-    import xmlrpclib
-    import urllib2
-    import httplib
-    from cookielib import CookieJar
-else:
-    import xmlrpc.client as xmlrpclib
-    import urllib.request as urllib2
-    import http.client as httplib
-    from http.cookiejar import CookieJar
+from six.moves import xmlrpc_client as xmlrpclib
+from six.moves.http_cookiejar import CookieJar
+from six.moves import http_client as httplib
+from six.moves.urllib import request as urllib2
 
 from types import *
 from datetime import datetime, time
