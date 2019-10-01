@@ -350,7 +350,10 @@ class Nitrate(object):
 
     def __str__(self):
         """ Provide ascii string representation """
-        return utils.ascii(unicode(self))
+        if six.PY2:
+            return utils.ascii(unicode(self))
+        else:
+            return self.__unicode__()
 
     def __unicode__(self):
         """ Short summary about the connection """

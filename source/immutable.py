@@ -24,10 +24,7 @@ Immutable Nitrate objects
 
 import re
 
-try:
-    import xmlrpclib
-except ImportError:
-    import xmlrpc.client as xmlrpclib
+from six.moves import xmlrpc_client as xmlrpclib
 
 import nitrate.config as config
 

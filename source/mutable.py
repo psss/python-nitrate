@@ -25,10 +25,7 @@ Mutable Nitrate objects
 import six
 import datetime
 
-try:
-    import xmlrpclib
-except ImportError:
-    import xmlrpc.client as xmlrpclib
+from six.moves import xmlrpc_client as xmlrpclib
 
 import nitrate.config as config
 
@@ -398,7 +395,11 @@ class TestPlan(Mutable):
         # Cache sortkey for future
         self._sortkey_lookup[testcase.id] = caseplan.sortkey
         # And finally return the current value
-        return caseplan.sortkey
+        if caseplan.sortkey is None:
+            # None and int is not comparable in Python 3
+            return 0
+        else:
+            return caseplan.sortkey
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  TestRun Class

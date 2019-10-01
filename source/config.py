@@ -68,10 +68,7 @@ status use 'print Nitrate()' which gives a short summary like this:
     Total requests handled: 0
 """
 
-try:
-    import ConfigParser
-except ImportError:
-    import configparser as ConfigParser
+from six.moves import configparser as ConfigParser
 
 import datetime
 import logging

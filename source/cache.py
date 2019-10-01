@@ -116,11 +116,7 @@ import pickle
 import atexit
 import datetime
 import tempfile
-
-try:
-    import xmlrpclib
-except ImportError:
-    import xmlrpc.client as xmlrpclib
+from six.moves import xmlrpc_client as xmlrpclib
 
 import nitrate.immutable as immutable
 import nitrate.mutable as mutable

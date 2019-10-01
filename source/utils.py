@@ -24,6 +24,7 @@ import re
 import math
 import sys
 import unicodedata
+import six
 
 from pprint import pformat as pretty
 
@@ -153,7 +154,7 @@ def human(time):
 
 def ascii(text):
     """ Transliterate special unicode characters into pure ascii """
-    if not isinstance(text, unicode):
+    if six.PY2 and not isinstance(text, unicode):
         text = unicode(text)
     return unicodedata.normalize('NFKD', text).encode('ascii','ignore')
 

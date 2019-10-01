@@ -60,10 +60,7 @@ Container overview (objects contained are listed in brackets):
 import six
 import psycopg2
 
-try:
-    import xmlrpclib
-except ImportError:
-    import xmlrpc.client as xmlrpclib
+from six.moves import xmlrpc_client as xmlrpclib
 
 import nitrate.config as config
 import nitrate.teiid as teiid
@@ -865,7 +862,7 @@ class RunCases(Container):
             self._server.TestRun.add_cases(self.id, data)
         # Handle duplicate entry errors by adding test cases one by one
         except xmlrpclib.Fault as error:
-            if not "Duplicate entry" in unicode(error):
+            if not "Duplicate entry" in six.u(error):
                 raise
             log.warn(error)
             for id in data:
