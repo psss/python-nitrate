@@ -463,6 +463,6 @@ class NitrateKerbXmlrpc(NitrateXmlrpc):
 
 if __name__ == "__main__":
     from pprint import pprint
-    n = NitrateKerbXmlrpc('https://tcms.englab.nay.redhat.com/xmlrpc/')
+    n = NitrateKerbXmlrpc('https://tcms.engineering.redhat.com/xmlrpc/')
     pprint(n.get_me())
 
