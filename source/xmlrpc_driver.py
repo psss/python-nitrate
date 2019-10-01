@@ -409,7 +409,7 @@ class NitrateXmlrpc(object):
             print("method %s, params %s" % (verb, params))
 
         try:
-            return getattr(self.server, verb)(params)
+            return getattr(self.server, verb)(*params)
         except xmlrpclib.Error as e:
             raise NitrateXmlrpcError(verb, params, e)
 
