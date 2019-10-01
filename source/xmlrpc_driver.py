@@ -36,9 +36,9 @@ n.testplan_get(10)
 from __future__ import print_function
 #import xmlrpclib, urllib2, httplib
 import gssapi
+import six
 
-import sys
-if sys.version_info.major == 2:
+if six.PY2:
     import xmlrpclib
     import urllib2
     import httplib
@@ -91,27 +91,26 @@ class CookieTransport(xmlrpclib.Transport):
     # This is just python 2.7's xmlrpclib.Transport.single_request, with
     # send additions noted below to send cookies along with the request
     def single_request_with_cookies(self, host, handler, request_body, verbose=0):
-        h = self.make_connection(host)
-        if verbose:
-            h.set_debuglevel(1)
-
         # ADDED: construct the URL and Request object for proper cookie handling
         request_url = "%s://%s%s" % (self.scheme,host,handler)
         #log.debug("request_url is %s" % request_url)
         cookie_request  = urllib2.Request(request_url)
 
         try:
-            if sys.version_info.major == 2:
-                self.send_request(h,handler,request_body)
+            if six.PY2:
+                h = self.make_connection(host)
+                if verbose:
+                    h.set_debuglevel(1)
+                self.send_request(h, handler, request_body)
+                self.send_host(h, host)
+                self.send_cookies(h, cookie_request)  # ADDED. creates cookiejar if None.
+                self.send_user_agent(h)
+                self.send_content(h, request_body)
             else:
-                self.send_request(h,handler,request_body,False)
+                # Python 3 xmlrpc.client.Transport makes its own connection
+                h = self.send_request(host, handler, request_body, verbose)
 
-            self.send_host(h,host)
-            self.send_cookies(h,cookie_request) # ADDED. creates cookiejar if None.
-            self.send_user_agent(h)
-            self.send_content(h,request_body)
-
-            response = h.getresponse(buffering=True)
+            response = h.getresponse()
 
             # ADDED: parse headers and get cookies here
             cookie_response = CookieResponse(response.msg)
