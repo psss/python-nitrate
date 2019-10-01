@@ -398,7 +398,11 @@ class TestPlan(Mutable):
         # Cache sortkey for future
         self._sortkey_lookup[testcase.id] = caseplan.sortkey
         # And finally return the current value
-        return caseplan.sortkey
+        if caseplan.sortkey is None:
+            # None and int is not comparable in Python 3
+            return 0
+        else:
+            return caseplan.sortkey
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  TestRun Class
