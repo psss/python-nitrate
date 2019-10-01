@@ -175,11 +175,6 @@ class GSSAPITransport(SafeCookieTransport):
 
         return host, extra_headers, x509
 
-    def _python_ver_larger_than_2_6(self):
-        import sys
-        vi = sys.version_info
-        return vi[0] >= 2 and vi[1] > 6
-
     def make_connection(self, host):
         '''
         For fixing bug #735937.
@@ -187,27 +182,20 @@ class GSSAPITransport(SafeCookieTransport):
         That is in Python 2.6, make_connection will return an individual HTTPS connection for each request
         '''
 
-        if self._python_ver_larger_than_2_6():
-            # create a HTTPS connection object from a host descriptor
-            # host may be a string, or a (host, x509-dict) tuple
-            try:
-                HTTPS = httplib.HTTPSConnection
-            except AttributeError:
-                raise NotImplementedError(
-                    "your version of httplib doesn't support HTTPS"
-                    )
-            else:
-                chost, self._extra_headers, x509 = self.get_host_info(host)
-                # nitrate isn't ready to use HTTP/1.1 persistent connection mechanism.
-                # So tell server current opened HTTP connection should be closed after request is handled.
-                # And there will be a new connection for next request.
-                self._extra_headers.append(('Connection', 'close'))
-                self._connection = host, HTTPS(chost, None, **(x509 or {}))
-                return self._connection[1]
-
+        try:
+            HTTPS = httplib.HTTPSConnection
+        except AttributeError:
+            raise NotImplementedError(
+                "your version of httplib doesn't support HTTPS"
+                )
         else:
-            # For Python 2.6, do the default behavior
-            return SafeCookieTransport.make_connection(self, host)
+            chost, self._extra_headers, x509 = self.get_host_info(host)
+            # nitrate isn't ready to use HTTP/1.1 persistent connection mechanism.
+            # So tell server current opened HTTP connection should be closed after request is handled.
+            # And there will be a new connection for next request.
+            self._extra_headers.append(('Connection', 'close'))
+            self._connection = host, HTTPS(chost, None, **(x509 or {}))
+            return self._connection[1]
 
 class NitrateError(Exception):
     pass
