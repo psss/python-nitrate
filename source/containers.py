@@ -865,7 +865,7 @@ class RunCases(Container):
             self._server.TestRun.add_cases(self.id, data)
         # Handle duplicate entry errors by adding test cases one by one
         except xmlrpclib.Fault as error:
-            if not "Duplicate entry" in unicode(error):
+            if not "Duplicate entry" in six.u(error):
                 raise
             log.warn(error)
             for id in data:
