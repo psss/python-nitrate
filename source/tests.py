@@ -168,7 +168,7 @@ class UtilsTests(unittest.TestCase):
 
     def test_sliced(self):
         """ Function sliced() sanity """
-        loaf = range(9)
+        loaf = list(range(9))
         self.assertEqual(list(sliced(loaf, 9)), [loaf])
         self.assertEqual(
                 list(sliced(loaf, 5)), [[0, 1, 2, 3, 4], [5, 6, 7, 8]])
