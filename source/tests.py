@@ -516,8 +516,7 @@ class UserTests(unittest.TestCase):
         """ User with no name set in preferences """
         user = User()
         user._name = None
-        self.assertEqual(six.u(user), u"No Name")
-        self.assertEqual(six.b(user), b"No Name")
+        self.assertEqual(str(user), u"No Name")
 
     def test_current_user(self):
         """ Current user available & sane """
