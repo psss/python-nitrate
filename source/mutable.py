@@ -373,7 +373,9 @@ class TestPlan(Mutable):
         try:
             cached_sortkey = self._sortkey_lookup[testcase.id]
             if sortkey is None: # no need to change value
-                return cached_sortkey
+                # In Python 3 we cannot compare None to int
+                # so it's better to return 0 instead of None
+                return cached_sortkey or 0
         except AttributeError: # cache doesn't exist yet
             self._sortkey_lookup = {}
         except KeyError: # not yet in cache
@@ -395,11 +397,9 @@ class TestPlan(Mutable):
         # Cache sortkey for future
         self._sortkey_lookup[testcase.id] = caseplan.sortkey
         # And finally return the current value
-        if caseplan.sortkey is None:
-            # None and int is not comparable in Python 3
-            return 0
-        else:
-            return caseplan.sortkey
+        # In Python 3 we cannot compare None to int
+        # so it's better to return 0 instead of None
+        return caseplan.sortkey or 0
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  TestRun Class
