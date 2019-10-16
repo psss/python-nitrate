@@ -168,7 +168,7 @@ class UtilsTests(unittest.TestCase):
 
     def test_sliced(self):
         """ Function sliced() sanity """
-        loaf = range(9)
+        loaf = list(range(9))
         self.assertEqual(list(sliced(loaf, 9)), [loaf])
         self.assertEqual(
                 list(sliced(loaf, 5)), [[0, 1, 2, 3, 4], [5, 6, 7, 8]])
@@ -516,8 +516,7 @@ class UserTests(unittest.TestCase):
         """ User with no name set in preferences """
         user = User()
         user._name = None
-        self.assertEqual(six.u(user), u"No Name")
-        self.assertEqual(six.b(user), b"No Name")
+        self.assertEqual(str(user), u"No Name")
 
     def test_current_user(self):
         """ Current user available & sane """
