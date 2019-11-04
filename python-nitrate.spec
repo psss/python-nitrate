@@ -1,6 +1,6 @@
 Name: python-nitrate
-Version: 1.4
-Release: 1%{?dist}
+Version: 1.5
+Release: 0%{?dist}
 
 Summary: Python API for the Nitrate test case management system
 Group: Development/Languages
@@ -11,7 +11,7 @@ Source0: https://github.com/psss/python-nitrate/releases/download/%{version}/pyt
 
 BuildArch: noarch
 BuildRequires: git
-BuildRequires: python2-devel python2-six
+BuildRequires: python3-devel python3-six
 
 %global _description\
 python-nitrate is a Python interface to the Nitrate test case\
@@ -22,16 +22,16 @@ line interpreter (useful for fast debugging and experimenting).
 
 %description %_description
 
-%package -n python2-nitrate
+%package -n python3-nitrate
 Summary: %summary
 %if 0%{?rhel}
 Requires: python-gssapi python-psycopg2
 %else
-Requires: python2-gssapi python2-psycopg2
+Requires: python3-gssapi python3-psycopg2
 %endif
-%{?python_provide:%python_provide python2-nitrate}
+%{?python_provide:%python_provide python3-nitrate}
 
-%description -n python2-nitrate %_description
+%description -n python3-nitrate %_description
 
 %prep
 %autosetup -S git
@@ -41,18 +41,21 @@ Requires: python2-gssapi python2-psycopg2
 %install
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_mandir}/man1
-mkdir -p %{buildroot}%{python2_sitelib}/nitrate
+mkdir -p %{buildroot}%{python3_sitelib}/nitrate
 install -pm 755 source/nitrate %{buildroot}%{_bindir}
-install -pm 644 source/*.py %{buildroot}%{python2_sitelib}/nitrate
+install -pm 644 source/*.py %{buildroot}%{python3_sitelib}/nitrate
 install -pm 644 docs/*.1.gz %{buildroot}%{_mandir}/man1
 
-%files -n python2-nitrate
+%files -n python3-nitrate
 %{_mandir}/man1/*
 %{_bindir}/nitrate
-%{python2_sitelib}/*
+%{python3_sitelib}/*
 %doc COPYING README examples
 
 %changelog
+* Mon Nov 04 2019 Martin Zeleny <mzeleny@redhat.com> 1.5-0
+- Ported to Python 3
+
 * Mon Nov 05 2018 Petr Šplíchal <psssssss@gmail.com> 1.4-1
 - Update specfile to new python packaging standards
 - Performance improvement for TestPlan.sortkey
