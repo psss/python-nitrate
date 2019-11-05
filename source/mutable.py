@@ -1299,7 +1299,7 @@ class CaseRun(Mutable):
         if inject["sortkey"] is not None:
             self._sortkey = int(inject["sortkey"])
         else:
-            self._sortkey = None
+            self._sortkey = 0
         self._status = Status(inject["case_run_status_id"])
         self._testrun = TestRun(inject["run_id"])
         # Initialize attached test case (from dict, object or id)
