@@ -23,13 +23,15 @@ Immutable Nitrate objects
 """
 
 import re
-import xmlrpclib
+
+from six.moves import xmlrpc_client as xmlrpclib
+
 import nitrate.config as config
 
 from nitrate.config import log
 from nitrate.base import Nitrate, NitrateNone, _getter, _idify
 from nitrate.utils import pretty, color
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Build Class
@@ -122,7 +124,7 @@ class Build(Nitrate):
             try:
                 log.info("Fetching build " + self.identifier)
                 inject = self._server.Build.get(self.id)
-            except xmlrpclib.Fault, error:
+            except xmlrpclib.Fault as error:
                 log.debug(error)
                 raise NitrateError(
                         "Cannot find build for " + self.identifier)
@@ -134,7 +136,7 @@ class Build(Nitrate):
                 inject = self._server.Build.check_build(
                         self.name, self.product.id)
                 self._id = inject["build_id"]
-            except xmlrpclib.Fault, error:
+            except xmlrpclib.Fault as error:
                 log.debug(error)
                 raise NitrateError("Build '{0}' not found in '{1}'".format(
                     self.name, self.product.name))
@@ -252,7 +254,7 @@ class Category(Nitrate):
             try:
                 log.info("Fetching category {0}".format(self.identifier))
                 inject = self._server.Product.get_category(self.id)
-            except xmlrpclib.Fault, error:
+            except xmlrpclib.Fault as error:
                 log.debug(error)
                 raise NitrateError(
                         "Cannot find category for " + self.identifier)
@@ -263,7 +265,7 @@ class Category(Nitrate):
                         self.name, self.product.name))
                 inject = self._server.Product.check_category(
                         self.name, self.product.id)
-            except xmlrpclib.Fault, error:
+            except xmlrpclib.Fault as error:
                 log.debug(error)
                 raise NitrateError("Category '{0}' not found in"
                         " '{1}'".format(self.name, self.product.name))
@@ -360,7 +362,7 @@ class PlanType(Nitrate):
             try:
                 log.info("Fetching test plan type " + self.identifier)
                 inject = self._server.TestPlan.get_plan_type(self.id)
-            except xmlrpclib.Fault, error:
+            except xmlrpclib.Fault as error:
                 log.debug(error)
                 raise NitrateError(
                         "Cannot find test plan type for " + self.identifier)
@@ -369,7 +371,7 @@ class PlanType(Nitrate):
             try:
                 log.info(u"Fetching test plan type '{0}'".format(self.name))
                 inject = self._server.TestPlan.check_plan_type(self.name)
-            except xmlrpclib.Fault, error:
+            except xmlrpclib.Fault as error:
                 log.debug(error)
                 raise NitrateError("PlanType '{0}' not found".format(
                         self.name))
@@ -1099,7 +1101,7 @@ class Component(Nitrate):
             try:
                 log.info("Fetching component " + self.identifier)
                 inject = self._server.Product.get_component(self.id)
-            except xmlrpclib.Fault, error:
+            except xmlrpclib.Fault as error:
                 log.debug(error)
                 raise NitrateError(
                         "Cannot find component for " + self.identifier)
@@ -1110,7 +1112,7 @@ class Component(Nitrate):
                         self.name, self.product.name))
                 inject = self._server.Product.check_component(
                         self.name, self.product.id)
-            except xmlrpclib.Fault, error:
+            except xmlrpclib.Fault as error:
                 log.debug(error)
                 raise NitrateError("Component '{0}' not found in"
                         " '{1}'".format(self.name, self.product.name))

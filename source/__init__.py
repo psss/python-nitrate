@@ -60,7 +60,7 @@ For details see pydoc documentation for individual modules:
     nitrate.teiid ........ Teiid support
     nitrate.tests ........ Test suite
     nitrate.utils ........ Utilities
-    nitrate.xmlrpc ....... XMLRPC driver
+    nitrate.xmlrpc_driver. XMLRPC driver
 """
 
 # Nitrate objects
@@ -93,7 +93,7 @@ from nitrate.config import (
         NEVER_EXPIRE, NEVER_CACHE, MULTICALL_MAX)
 
 # Data communication exceptions
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 from nitrate.teiid import TeiidError
 
 # Persistent cache and Multicall support

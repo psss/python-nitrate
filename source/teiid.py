@@ -35,7 +35,7 @@ Use the following config snippet to enable access via psycopg2 module:
 import psycopg2
 
 from nitrate.config import log, Config
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Exceptions
@@ -76,7 +76,7 @@ class Teiid(object):
         try:
             self.connection = psycopg2.connect(database=database,
                     user=user, password=password, host=host, port=port)
-        except psycopg2.DatabaseError, error:
+        except psycopg2.DatabaseError as error:
             log.error("Teiid connect error: {0}".format(error))
             raise TeiidError("Failed to connect to the Teiid instance")
         self.connection.set_isolation_level(0)

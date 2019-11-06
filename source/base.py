@@ -37,14 +37,15 @@ For the complete list of available operators see Django documentation:
 https://docs.djangoproject.com/en/dev/ref/models/querysets/#field-lookups
 """
 
+import six
 import datetime
 import nitrate.config as config
 import nitrate.utils as utils
-import nitrate.xmlrpc as xmlrpc
+import nitrate.xmlrpc_driver as xmlrpc_driver
 import nitrate.teiid as teiid
 
 from nitrate.config import log, Config
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Internal Utilities
@@ -115,7 +116,7 @@ def _idify(id):
         result = []
         while id > 0:
             remainder = id % config._MAX_ID
-            id = id / config._MAX_ID
+            id = id // config._MAX_ID
             result.append(int(remainder))
         result.reverse()
         return result
@@ -195,13 +196,13 @@ class Nitrate(object):
                     Config().nitrate.url))
             # Plain authentication if username & password given
             try:
-                Nitrate._connection = xmlrpc.NitrateXmlrpc(
+                Nitrate._connection = xmlrpc_driver.NitrateXmlrpc(
                         Config().nitrate.username,
                         Config().nitrate.password,
                         Config().nitrate.url).server
             # Kerberos otherwise
             except AttributeError:
-                Nitrate._connection = xmlrpc.NitrateKerbXmlrpc(
+                Nitrate._connection = xmlrpc_driver.NitrateKerbXmlrpc(
                         Config().nitrate.url).server
 
         # Return existing connection
@@ -221,7 +222,7 @@ class Nitrate(object):
     def _cache_lookup(cls, id, **kwargs):
         """ Look up cached objects, return found instance and search key """
         # ID check
-        if isinstance(id, int) or isinstance(id, basestring):
+        if isinstance(id, int) or isinstance(id, six.string_types):
             return cls._cache[id], id
 
         # Check injet (initial object dictionary) for id
@@ -243,7 +244,7 @@ class Nitrate(object):
         if isinstance(id, Nitrate):
             return id._fetched is not None
         # Check for presence in cache, make sure the object is fetched
-        if isinstance(id, int) or isinstance(id, basestring):
+        if isinstance(id, int) or isinstance(id, six.string_types):
             return id in cls._cache and cls._cache[id]._fetched is not None
         # Run recursively for each given id/object if list given
         if isinstance(id, list) or isinstance(id, set):
@@ -270,7 +271,7 @@ class Nitrate(object):
         if isinstance(id_or_inject, dict):
             inject = id_or_inject
         # Object identified by name
-        elif isinstance(id_or_inject, basestring):
+        elif isinstance(id_or_inject, six.string_types):
             name =  id_or_inject
         # Regular object id
         else:
@@ -323,7 +324,7 @@ class Nitrate(object):
             if isinstance(id, int):
                 log.cache("Caching {0} ID#{1}".format(cls.__name__, id))
                 cls._cache[id] = new
-            elif isinstance(id, basestring) or "name" in kwargs:
+            elif isinstance(id, six.string_types) or "name" in kwargs:
                 log.cache("Caching {0} '{1}'".format(
                         cls.__name__, (id or kwargs.get("name"))))
             return new
@@ -349,7 +350,10 @@ class Nitrate(object):
 
     def __str__(self):
         """ Provide ascii string representation """
-        return utils.ascii(unicode(self))
+        if six.PY2:
+            return utils.ascii(unicode(self))
+        else:
+            return self.__unicode__()
 
     def __unicode__(self):
         """ Short summary about the connection """

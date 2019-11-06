@@ -57,8 +57,11 @@ Container overview (objects contained are listed in brackets):
     CaseRun.bugs = CaseRunBugs[Bug] ....................... done
 """
 
+import six
 import psycopg2
-import xmlrpclib
+
+from six.moves import xmlrpc_client as xmlrpclib
+
 import nitrate.config as config
 import nitrate.teiid as teiid
 
@@ -66,7 +69,7 @@ from nitrate.config import log
 from nitrate.utils import pretty, listed, sliced
 from nitrate.base import Nitrate, NitrateNone, _getter, _idify
 from nitrate.immutable import Component, Bug, Tag
-from nitrate.xmlrpc import NitrateError
+from nitrate.xmlrpc_driver import NitrateError
 from nitrate.mutable import (
         Mutable, TestPlan, TestRun, TestCase, CaseRun, CasePlan)
 
@@ -491,20 +494,20 @@ class TagContainer(Container):
 
     def __contains__(self, tag):
         """ Tag 'in' operator """
-        tag = Tag(tag) if isinstance(tag, basestring) else tag
+        tag = Tag(tag) if isinstance(tag, six.string_types) else tag
         return tag in self._items
 
     def add(self, tags):
         """ Add a tag or a list of tags """
         tags = [tags] if not isinstance(tags, list) else tags
-        tags = [Tag(tag) if isinstance(tag, basestring) else tag
+        tags = [Tag(tag) if isinstance(tag, six.string_types) else tag
                 for tag in tags]
         super(TagContainer, self).add(tags)
 
     def remove(self, tags):
         """ Remove a tag or a list of tags """
         tags = [tags] if not isinstance(tags, list) else tags
-        tags = [Tag(tag) if isinstance(tag, basestring) else tag
+        tags = [Tag(tag) if isinstance(tag, six.string_types) else tag
                 for tag in tags]
         super(TagContainer, self).remove(tags)
 
@@ -839,7 +842,7 @@ class RunCases(Container):
             injects = self._teiid.run_cases(self.id)
         except teiid.TeiidNotConfigured:
             injects = self._server.TestRun.get_test_cases(self.id)
-        except psycopg2.DatabaseError, error:
+        except psycopg2.DatabaseError as error:
             log.debug("Failed to fetch data from Teiid: {0}".format(error))
             injects = self._server.TestRun.get_test_cases(self.id)
         self._current = set([TestCase(inject) for inject in injects])
@@ -858,8 +861,8 @@ class RunCases(Container):
         try:
             self._server.TestRun.add_cases(self.id, data)
         # Handle duplicate entry errors by adding test cases one by one
-        except xmlrpclib.Fault, error:
-            if not "Duplicate entry" in unicode(error):
+        except xmlrpclib.Fault as error:
+            if not "Duplicate entry" in six.u(error):
                 raise
             log.warn(error)
             for id in data:
@@ -912,7 +915,7 @@ class RunCaseRuns(Container):
             injects = self._teiid.run_case_runs(self.id)
         except teiid.TeiidNotConfigured:
             injects = self._server.TestRun.get_test_case_runs(self.id)
-        except psycopg2.DatabaseError, error:
+        except psycopg2.DatabaseError as error:
             log.debug("Failed to fetch data from Teiid: {0}".format(error))
             injects = self._server.TestRun.get_test_case_runs(self.id)
         # Feed the TestRun.testcases container with the initial object

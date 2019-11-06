@@ -116,7 +116,8 @@ import pickle
 import atexit
 import datetime
 import tempfile
-import xmlrpclib
+from six.moves import xmlrpc_client as xmlrpclib
+
 import nitrate.immutable as immutable
 import nitrate.mutable as mutable
 import nitrate.containers as containers
@@ -189,7 +190,8 @@ class Cache(object):
     def __new__(cls, *args, **kwargs):
         """ Make sure we create a single instance only """
         if not cls._instance:
-            cls._instance = super(Cache, cls).__new__(cls, *args, **kwargs)
+            cls._instance = super(Cache, cls).__new__(cls)
+            cls._instance.__init__(*args, **kwargs)
         return cls._instance
 
     def __init__(self, filename=None):
@@ -278,7 +280,7 @@ class Cache(object):
             output_file.close()
             os.rename(output_file.name, self._filename)
             log.debug("Persistent cache successfully saved")
-        except IOError, error:
+        except IOError as error:
             log.error("Failed to save persistent cache ({0})".format(error))
 
     def load(self):
@@ -298,7 +300,7 @@ class Cache(object):
         except EOFError:
             log.cache("Cache file empty, will fill it upon exit")
             return
-        except (IOError, zlib.error), error:
+        except (IOError, zlib.error) as error:
             if getattr(error, "errno", None) == 2:
                 log.warn("Cache file not found, will create one on exit")
                 return
@@ -370,7 +372,7 @@ class Cache(object):
         try:
             log.cache("Removing cache lock {0}".format(self._lock))
             os.remove(self._lock)
-        except OSError, error:
+        except OSError as error:
             log.error("Failed to remove the cache lock {0} ({1})".format(
                     self._lock, error))
 
@@ -422,7 +424,7 @@ class Cache(object):
                     listed([klass.__name__ for klass in classes])))
         # For each class re-initialize objects and remove from index
         for current_class in classes:
-            for current_object in current_class._cache.itervalues():
+            for current_object in current_class._cache.values():
                 # Reset the object to the initial state
                 current_object._init()
             current_class._cache = {}

@@ -33,12 +33,19 @@ n = NitrateXmlrpc(
 n.testplan_get(10)
 """
 
-import xmlrpclib, urllib2, httplib, gssapi
+from __future__ import print_function
+#import xmlrpclib, urllib2, httplib
+import gssapi
+import six
+
+from six.moves import xmlrpc_client as xmlrpclib
+from six.moves.http_cookiejar import CookieJar
+from six.moves import http_client as httplib
+from six.moves.urllib import request as urllib2
+
 from types import *
 from datetime import datetime, time
 from base64 import b64encode, b64decode
-
-from cookielib import CookieJar
 
 VERBOSE = 0
 DEBUG = 0
@@ -75,83 +82,29 @@ class CookieTransport(xmlrpclib.Transport):
             for h,v in cookielist:
                 connection.putheader(h,v)
 
-    # This is the same request() method from xmlrpclib.Transport,
-    # with a couple additions noted below
-    def request_with_cookies(self, host, handler, request_body, verbose=0):
-        h = self.make_connection(host)
-        if verbose:
-            h.set_debuglevel(1)
-
-        # ADDED: construct the URL and Request object for proper cookie handling
-        request_url = "%s://%s%s" % (self.scheme,host,handler)
-        #log.debug("request_url is %s" % request_url)
-        cookie_request  = urllib2.Request(request_url)
-
-        self.send_request(h,handler,request_body)
-        self.send_host(h,host)
-        self.send_cookies(h,cookie_request) # ADDED. creates cookiejar if None.
-        self.send_user_agent(h)
-        self.send_content(h,request_body)
-
-        errcode, errmsg, headers = h.getreply()
-
-        # ADDED: parse headers and get cookies here
-        cookie_response = CookieResponse(headers)
-        # Okay, extract the cookies from the headers
-        self.cookiejar.extract_cookies(cookie_response,cookie_request)
-        #log.debug("cookiejar now contains: %s" % self.cookiejar._cookies)
-        # And write back any changes
-        if hasattr(self.cookiejar,'save'):
-            try:
-                self.cookiejar.save(self.cookiejar.filename)
-            except Exception, e:
-                raise
-                #log.error("Couldn't write cookiefile %s: %s" % \
-                #        (self.cookiejar.filename,str(e)))
-
-        if errcode != 200:
-            # When runs here, the HTTPS connection isn't useful any more
-            #   before raising an exception to caller
-            h.close()
-
-            raise xmlrpclib.ProtocolError(
-                host + handler,
-                errcode, errmsg,
-                headers
-                )
-
-        self.verbose = verbose
-
-        try:
-            sock = h._conn.sock
-        except AttributeError:
-            sock = None
-
-        try:
-            return self._parse_response(h.getfile(), sock)
-        finally:
-            h.close()
-
-        # This is just python 2.7's xmlrpclib.Transport.single_request, with
+    # This is just python 2.7's xmlrpclib.Transport.single_request, with
     # send additions noted below to send cookies along with the request
     def single_request_with_cookies(self, host, handler, request_body, verbose=0):
-        h = self.make_connection(host)
-        if verbose:
-            h.set_debuglevel(1)
-
         # ADDED: construct the URL and Request object for proper cookie handling
         request_url = "%s://%s%s" % (self.scheme,host,handler)
         #log.debug("request_url is %s" % request_url)
         cookie_request  = urllib2.Request(request_url)
 
         try:
-            self.send_request(h,handler,request_body)
-            self.send_host(h,host)
-            self.send_cookies(h,cookie_request) # ADDED. creates cookiejar if None.
-            self.send_user_agent(h)
-            self.send_content(h,request_body)
+            if six.PY2:
+                h = self.make_connection(host)
+                if verbose:
+                    h.set_debuglevel(1)
+                self.send_request(h, handler, request_body)
+                self.send_host(h, host)
+                self.send_cookies(h, cookie_request)  # ADDED. creates cookiejar if None.
+                self.send_user_agent(h)
+                self.send_content(h, request_body)
+            else:
+                # Python 3 xmlrpc.client.Transport makes its own connection
+                h = self.send_request(host, handler, request_body, verbose)
 
-            response = h.getresponse(buffering=True)
+            response = h.getresponse()
 
             # ADDED: parse headers and get cookies here
             cookie_response = CookieResponse(response.msg)
@@ -162,7 +115,7 @@ class CookieTransport(xmlrpclib.Transport):
             if hasattr(self.cookiejar,'save'):
                 try:
                     self.cookiejar.save(self.cookiejar.filename)
-                except Exception, e:
+                except Exception as e:
                     raise
                     #log.error("Couldn't write cookiefile %s: %s" % \
                     #        (self.cookiejar.filename,str(e)))
@@ -184,19 +137,13 @@ class CookieTransport(xmlrpclib.Transport):
             h.close()
 
     # Override the appropriate request method
-    if hasattr(xmlrpclib.Transport, 'single_request'):
-        single_request = single_request_with_cookies # python 2.7+
-    else:
-        request = request_with_cookies # python 2.6 and earlier
+    single_request = single_request_with_cookies # python 2.7+
 
 class SafeCookieTransport(xmlrpclib.SafeTransport,CookieTransport):
     '''SafeTransport subclass that supports cookies.'''
     scheme = 'https'
     # Override the appropriate request method
-    if hasattr(xmlrpclib.Transport, 'single_request'):
-        single_request = CookieTransport.single_request_with_cookies
-    else:
-        request = CookieTransport.request_with_cookies
+    single_request = CookieTransport.single_request_with_cookies
 
 # Stolen from FreeIPA source freeipa-1.2.1/ipa-python/krbtransport.py
 # Ported to use python-gssapi
@@ -221,11 +168,6 @@ class GSSAPITransport(SafeCookieTransport):
 
         return host, extra_headers, x509
 
-    def _python_ver_larger_than_2_6(self):
-        import sys
-        vi = sys.version_info
-        return vi[0] >= 2 and vi[1] > 6
-
     def make_connection(self, host):
         '''
         For fixing bug #735937.
@@ -233,27 +175,20 @@ class GSSAPITransport(SafeCookieTransport):
         That is in Python 2.6, make_connection will return an individual HTTPS connection for each request
         '''
 
-        if self._python_ver_larger_than_2_6():
-            # create a HTTPS connection object from a host descriptor
-            # host may be a string, or a (host, x509-dict) tuple
-            try:
-                HTTPS = httplib.HTTPSConnection
-            except AttributeError:
-                raise NotImplementedError(
-                    "your version of httplib doesn't support HTTPS"
-                    )
-            else:
-                chost, self._extra_headers, x509 = self.get_host_info(host)
-                # nitrate isn't ready to use HTTP/1.1 persistent connection mechanism.
-                # So tell server current opened HTTP connection should be closed after request is handled.
-                # And there will be a new connection for next request.
-                self._extra_headers.append(('Connection', 'close'))
-                self._connection = host, HTTPS(chost, None, **(x509 or {}))
-                return self._connection[1]
-
+        try:
+            HTTPS = httplib.HTTPSConnection
+        except AttributeError:
+            raise NotImplementedError(
+                "your version of httplib doesn't support HTTPS"
+                )
         else:
-            # For Python 2.6, do the default behavior
-            return SafeCookieTransport.make_connection(self, host)
+            chost, self._extra_headers, x509 = self.get_host_info(host)
+            # nitrate isn't ready to use HTTP/1.1 persistent connection mechanism.
+            # So tell server current opened HTTP connection should be closed after request is handled.
+            # And there will be a new connection for next request.
+            self._extra_headers.append(('Connection', 'close'))
+            self._connection = host, HTTPS(chost, None, **(x509 or {}))
+            return self._connection[1]
 
 class NitrateError(Exception):
     pass
@@ -295,7 +230,7 @@ class NitrateXmlrpc(object):
             raise NitrateError("Unrecognized URL scheme")
 
         self._transport.cookiejar = CookieJar()
-        # print "COOKIES:", self._transport.cookiejar._cookies
+        # print("COOKIES:", self._transport.cookiejar._cookies)
         self.server = xmlrpclib.ServerProxy(
             url,
             transport = self._transport,
@@ -336,7 +271,7 @@ class NitrateXmlrpc(object):
         returns "'datetime': '2007-12-05 13:01:03'"
         """
         if value:
-            if type(value) is not type(datetime(2000,01,01,12,00,00)):
+            if not isinstance(value, datetime):
                 raise NitrateError("The option '%s' is not a valid datetime object." % option)
             return "\'%s\':\'%s\', " % (option, value.strftime("%Y-%m-%d %H:%M:%S"))
         return ''
@@ -450,13 +385,13 @@ class NitrateXmlrpc(object):
         params = ''
         for arg in args:
             params = ("%s" % str(arg), "%s, %s" % (params, str(arg)))[params!='']
-        cmd = "self.server." + verb + "(" + params + ")"
+
         if DEBUG:
-            print cmd
+            print("method %s, params %s" % (verb, params))
 
         try:
-            return eval(cmd)
-        except xmlrpclib.Error, e:
+            return getattr(self.server, verb)(*params)
+        except xmlrpclib.Error as e:
             raise NitrateXmlrpcError(verb, params, e)
 
     ############################## Build #######################################
@@ -496,7 +431,7 @@ class NitrateKerbXmlrpc(NitrateXmlrpc):
             raise NitrateError("Unrecognized URL scheme: {0}".format(url))
 
         self._transport.cookiejar = CookieJar()
-        # print "COOKIES:", self._transport.cookiejar._cookies
+        # print("COOKIES:", self._transport.cookiejar._cookies)
         self.server = xmlrpclib.ServerProxy(
             url,
             transport = self._transport,
@@ -509,6 +444,6 @@ class NitrateKerbXmlrpc(NitrateXmlrpc):
 
 if __name__ == "__main__":
     from pprint import pprint
-    n = NitrateKerbXmlrpc('https://tcms.englab.nay.redhat.com/xmlrpc/')
+    n = NitrateKerbXmlrpc('https://tcms.engineering.redhat.com/xmlrpc/')
     pprint(n.get_me())
 
