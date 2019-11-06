@@ -1,17 +1,18 @@
 Name: python-nitrate
 Version: 1.5
-Release: 0%{?dist}
+Release: 1%{?dist}
 
 Summary: Python API for the Nitrate test case management system
 Group: Development/Languages
 License: LGPLv2
 
 URL: https://github.com/psss/python-nitrate
-Source0: https://github.com/psss/python-nitrate/releases/download/%{version}/python-nitrate-%{version}.tar.bz2
+Source0: %{url}/releases/download/%{version}/python-nitrate-%{version}.tar.bz2
 
 BuildArch: noarch
-BuildRequires: git
-BuildRequires: python3-devel python3-six
+BuildRequires: git-core
+BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-six
 
 %global _description\
 python-nitrate is a Python interface to the Nitrate test case\
@@ -24,11 +25,8 @@ line interpreter (useful for fast debugging and experimenting).
 
 %package -n python3-nitrate
 Summary: %summary
-%if 0%{?rhel}
-Requires: python-gssapi python-psycopg2
-%else
-Requires: python3-gssapi python3-psycopg2
-%endif
+Requires: python%{python3_pkgversion}-gssapi
+Requires: python%{python3_pkgversion}-psycopg2
 %{?python_provide:%python_provide python3-nitrate}
 
 %description -n python3-nitrate %_description
