@@ -14,7 +14,7 @@ DOCS = $(TMP)/$(PACKAGE)/docs
 EXAMPLES = $(TMP)/$(PACKAGE)/examples
 CSS = --stylesheet=style.css --link-stylesheet
 FILES = COPYING README \
-		Makefile python-nitrate.spec \
+		Makefile python-nitrate.spec setup.py \
 		docs examples source
 
 all: push clean

@@ -1,6 +1,6 @@
 Name: python-nitrate
 Version: 1.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 Summary: Python API for the Nitrate test case management system
 Group: Development/Languages
@@ -14,14 +14,9 @@ BuildRequires: git-core
 BuildRequires: python%{python3_pkgversion}-devel
 BuildRequires: python%{python3_pkgversion}-six
 
-%global _description\
-python-nitrate is a Python interface to the Nitrate test case\
-management system. The package consists of a high-level Python\
-module (provides natural object interface), a low-level driver\
-(allows to directly access Nitrate's XMLRPC API) and a command\
-line interpreter (useful for fast debugging and experimenting).
+%description
+A Python interface to the Nitrate test case management system.
 
-%description %_description
 
 %package -n python3-nitrate
 Summary: %summary
@@ -29,28 +24,37 @@ Requires: python%{python3_pkgversion}-gssapi
 Requires: python%{python3_pkgversion}-psycopg2
 %{?python_provide:%python_provide python3-nitrate}
 
-%description -n python3-nitrate %_description
+%description -n python3-nitrate
+A Python interface to the Nitrate test case management system.
+The package consists of a high-level Python module (provides
+natural object interface), a low-level driver (allows to directly
+access Nitrate's XMLRPC API) and a command line interpreter
+(useful for fast debugging and experimenting).
 
 %prep
 %autosetup -S git
 
 %build
+%py3_build
 
 %install
-mkdir -p %{buildroot}%{_bindir}
+%py3_install
 mkdir -p %{buildroot}%{_mandir}/man1
-mkdir -p %{buildroot}%{python3_sitelib}/nitrate
-install -pm 755 source/nitrate %{buildroot}%{_bindir}
-install -pm 644 source/*.py %{buildroot}%{python3_sitelib}/nitrate
 install -pm 644 docs/*.1.gz %{buildroot}%{_mandir}/man1
+# Workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1335203
+pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrate
 
 %files -n python3-nitrate
+%{python3_sitelib}/nitrate/
+%{python3_sitelib}/nitrate-*.egg-info/
 %{_mandir}/man1/*
 %{_bindir}/nitrate
-%{python3_sitelib}/*
 %doc COPYING README examples
 
 %changelog
+* Mon Nov 11 2019 Petr Šplíchal <psplicha@redhat.com> - 1.5-2
+- Use py3_build and py3_install to simplify spec
+
 * Mon Nov 04 2019 Martin Zeleny <mzeleny@redhat.com> 1.5-0
 - Ported to Python 3
 
