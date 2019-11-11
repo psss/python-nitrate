@@ -9,6 +9,21 @@ License: LGPLv2
 URL: https://github.com/psss/python-nitrate
 Source0: %{url}/releases/download/%{version}/python-nitrate-%{version}.tar.bz2
 
+# Depending on the distro, we set some defaults.
+# Note that the bcond macros are named for the CLI option they create.
+# "%%bcond_without" means "ENABLE by default and create a --without option"
+
+# Fedora or RHEL 8+
+%if 0%{?fedora} || 0%{?rhel} > 7
+%bcond_with oldreqs
+%bcond_with englocale
+%else
+# The automatic runtime dependency generator doesn't exist yet
+%bcond_without oldreqs
+# The C.UTF-8 locale doesn't exist, Python defaults to C (ASCII)
+%bcond_without englocale
+%endif
+
 BuildArch: noarch
 BuildRequires: git-core
 BuildRequires: python%{python3_pkgversion}-devel
@@ -20,9 +35,11 @@ A Python interface to the Nitrate test case management system.
 
 %package -n python3-nitrate
 Summary: %summary
+%{?python_provide:%python_provide python3-nitrate}
+%if %{with oldreqs}
 Requires: python%{python3_pkgversion}-gssapi
 Requires: python%{python3_pkgversion}-psycopg2
-%{?python_provide:%python_provide python3-nitrate}
+%endif
 
 %description -n python3-nitrate
 A Python interface to the Nitrate test case management system.
@@ -35,9 +52,15 @@ access Nitrate's XMLRPC API) and a command line interpreter
 %autosetup -S git
 
 %build
+%if %{with englocale}
+export LANG=en_US.utf-8
+%endif
 %py3_build
 
 %install
+%if %{with englocale}
+export LANG=en_US.utf-8
+%endif
 %py3_install
 mkdir -p %{buildroot}%{_mandir}/man1
 install -pm 644 docs/*.1.gz %{buildroot}%{_mandir}/man1
