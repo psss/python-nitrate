@@ -3,11 +3,10 @@ Version: 1.5
 Release: 2%{?dist}
 
 Summary: Python API for the Nitrate test case management system
-Group: Development/Languages
-License: LGPLv2
+License: LGPLv2+
 
 URL: https://github.com/psss/python-nitrate
-Source0: %{url}/releases/download/%{version}/python-nitrate-%{version}.tar.bz2
+Source0: %{url}/releases/download/%{version}/%{name}-%{version}.tar.bz2
 
 # Depending on the distro, we set some defaults.
 # Note that the bcond macros are named for the CLI option they create.
@@ -27,10 +26,17 @@ Source0: %{url}/releases/download/%{version}/python-nitrate-%{version}.tar.bz2
 BuildArch: noarch
 BuildRequires: git-core
 BuildRequires: python%{python3_pkgversion}-devel
+BuildRequires: python%{python3_pkgversion}-setuptools
 BuildRequires: python%{python3_pkgversion}-six
 
-%description
+%global _description %{expand:
 A Python interface to the Nitrate test case management system.
+The package consists of a high-level Python module (provides
+natural object interface), a low-level driver (allows to directly
+access Nitrate's XMLRPC API) and a command line interpreter
+(useful for fast debugging and experimenting).}
+
+%description %_description
 
 
 %package -n python3-nitrate
@@ -39,14 +45,10 @@ Summary: %summary
 %if %{with oldreqs}
 Requires: python%{python3_pkgversion}-gssapi
 Requires: python%{python3_pkgversion}-psycopg2
+Requires: python%{python3_pkgversion}-six
 %endif
 
-%description -n python3-nitrate
-A Python interface to the Nitrate test case management system.
-The package consists of a high-level Python module (provides
-natural object interface), a low-level driver (allows to directly
-access Nitrate's XMLRPC API) and a command line interpreter
-(useful for fast debugging and experimenting).
+%description -n python3-nitrate %_description
 
 %prep
 %autosetup -S git
@@ -79,6 +81,7 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrat
 * Mon Nov 11 2019 Petr Šplíchal <psplicha@redhat.com> - 1.5-2
 - Use py3_build and py3_install to simplify spec
 - Rename and explicitly list the license file
+- Remove group, fix license, add missing requires
 
 * Mon Nov 04 2019 Martin Zeleny <mzeleny@redhat.com> 1.5-0
 - Ported to Python 3
