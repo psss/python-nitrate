@@ -13,7 +13,7 @@ PACKAGE = python-nitrate-$(VERSION)
 DOCS = $(TMP)/$(PACKAGE)/docs
 EXAMPLES = $(TMP)/$(PACKAGE)/examples
 CSS = --stylesheet=style.css --link-stylesheet
-FILES = COPYING README \
+FILES = LICENSE README \
 		Makefile python-nitrate.spec setup.py \
 		docs examples source
 

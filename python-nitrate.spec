@@ -49,11 +49,13 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrat
 %{python3_sitelib}/nitrate-*.egg-info/
 %{_mandir}/man1/*
 %{_bindir}/nitrate
-%doc COPYING README examples
+%doc README examples
+%license LICENSE
 
 %changelog
 * Mon Nov 11 2019 Petr Šplíchal <psplicha@redhat.com> - 1.5-2
 - Use py3_build and py3_install to simplify spec
+- Rename and explicitly list the license file
 
 * Mon Nov 04 2019 Martin Zeleny <mzeleny@redhat.com> 1.5-0
 - Ported to Python 3
