@@ -41,6 +41,8 @@ BuildRequires: python2-setuptools
 BuildRequires: python2-six
 %endif
 
+%{?python_enable_dependency_generator}
+
 %global _description %{expand:
 A Python interface to the Nitrate test case management system.
 The package consists of a high-level Python module (provides
@@ -126,6 +128,7 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrat
 %changelog
 * Thu Nov 21 2019 Petr Šplíchal <psplicha@redhat.com> - 1.5-4
 - Fix requires (no python2-gssapi and python2-psycopg2 in RHEL7).
+- Enable automated python dependecies generator
 
 * Wed Nov 20 2019 Petr Šplíchal <psplicha@redhat.com> - 1.5-3
 - For older releases build both python2 and python3 packages
