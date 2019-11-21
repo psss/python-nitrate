@@ -1,6 +1,6 @@
 Name: python-nitrate
 Version: 1.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 Summary: Python API for the Nitrate test case management system
 License: LGPLv2+
@@ -57,8 +57,13 @@ for fast debugging and experimenting).}
 Summary: %{summary}
 %{?python_provide:%python_provide python2-nitrate}
 %if %{with oldreqs}
+%if 0%{?rhel} > 7
 Requires: python2-gssapi
 Requires: python2-psycopg2
+%else
+Requires: python-gssapi
+Requires: python-psycopg2
+%endif
 Requires: python2-six
 %endif
 
@@ -66,7 +71,7 @@ Requires: python2-six
 %endif
 
 # Python 3
-%package -n python3-nitrate
+%package -n python%{python3_pkgversion}-nitrate
 Summary: %{summary}
 %{?python_provide:%python_provide python3-nitrate}
 %if %{with oldreqs}
@@ -76,7 +81,7 @@ Requires: python%{python3_pkgversion}-six
 %endif
 Conflicts: python2-nitrate < 1.5-3
 
-%description -n python3-nitrate %_description
+%description -n python%{python3_pkgversion}-nitrate %_description
 
 %prep
 %autosetup -S git
@@ -110,7 +115,7 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrat
 %license LICENSE
 %endif
 
-%files -n python3-nitrate
+%files -n python%{python3_pkgversion}-nitrate
 %{python3_sitelib}/nitrate/
 %{python3_sitelib}/nitrate-*.egg-info/
 %{_mandir}/man1/*
@@ -119,6 +124,9 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrat
 %license LICENSE
 
 %changelog
+* Thu Nov 21 2019 Petr Šplíchal <psplicha@redhat.com> - 1.5-4
+- Fix requires (no python2-gssapi and python2-psycopg2 in RHEL7).
+
 * Wed Nov 20 2019 Petr Šplíchal <psplicha@redhat.com> - 1.5-3
 - For older releases build both python2 and python3 packages
 - Include conflicting files only in the python3 package
