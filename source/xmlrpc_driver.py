@@ -134,7 +134,10 @@ class CookieTransport(xmlrpclib.Transport):
         except xmlrpclib.Fault:
             raise
         finally:
-            h.close()
+            try:
+                h.close()
+            except NameError:  # h not initialized yet
+                pass
 
     # Override the appropriate request method
     single_request = single_request_with_cookies # python 2.7+
