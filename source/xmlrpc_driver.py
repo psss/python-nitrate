@@ -91,6 +91,7 @@ class CookieTransport(xmlrpclib.Transport):
         cookie_request  = urllib2.Request(request_url)
 
         try:
+            h = None
             if six.PY2:
                 h = self.make_connection(host)
                 if verbose:
@@ -134,7 +135,8 @@ class CookieTransport(xmlrpclib.Transport):
         except xmlrpclib.Fault:
             raise
         finally:
-            h.close()
+            if h is not None:
+                h.close()
 
     # Override the appropriate request method
     single_request = single_request_with_cookies # python 2.7+
