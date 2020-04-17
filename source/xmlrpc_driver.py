@@ -242,10 +242,10 @@ class NitrateXmlrpc(object):
         )
 
         # Login, get a cookie into our cookie jar:
-        login_dict = self.do_command("Auth.login", [dict(
+        login_dict = self.server.Auth.login(dict(
                 username = username,
                 password = password,
-        )])
+        ))
 
         # Record the user ID in case the script wants this
         # self.user_id = login_dict['id']
