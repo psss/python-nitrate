@@ -314,7 +314,7 @@ class NitrateXmlrpc(object):
 
         Example: self._number_no_option(1) returns 1
         """
-        if type(number) is not IntType:
+        if type(number) is not int:
             raise NitrateError("The 'number' parameter is not an integer.")
         return str(number)
 
@@ -389,11 +389,14 @@ class NitrateXmlrpc(object):
         for arg in args:
             params = ("%s" % str(arg), "%s, %s" % (params, str(arg)))[params!='']
 
+        cmd = "self.server." + verb + "(" + params + ")"
         if DEBUG:
             print("method %s, params %s" % (verb, params))
+            print(cmd)
 
         try:
-            return getattr(self.server, verb)(*params)
+#            return getattr(self.server, verb)(*params)
+            return eval(cmd)
         except xmlrpclib.Error as e:
             raise NitrateXmlrpcError(verb, params, e)
 
