@@ -95,9 +95,8 @@ class Teiid(object):
         # Parse columns, fetch rows
         columns = [desc[0] for desc in cursor.description]
         rows = cursor.fetchall()
-        # Convert longs into ints and dictify the table
-        rows = [[int(item) if isinstance(item, long) else item
-                for item in row] for row in rows]
+        # dictify the table
+        rows = [[item for item in row] for row in rows]
         return [dict(zip(columns, row)) for row in rows]
 
     def run_case_runs(self, testrun):
