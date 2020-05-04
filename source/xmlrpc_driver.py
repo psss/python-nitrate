@@ -385,20 +385,14 @@ class NitrateXmlrpc(object):
         'verb' -- string, the xmlrpc verb,
         'args' -- list, the argument list,
         """
-        params = ''
-        for arg in args:
-            params = ("%s" % str(arg), "%s, %s" % (params, str(arg)))[params!='']
-
-        cmd = "self.server." + verb + "(" + params + ")"
+        params = [arg for arg in args if str(arg) != '']
         if DEBUG:
-            print("method %s, params %s" % (verb, params))
-            print(cmd)
+            print("method {}, params {}".format(verb, params))
 
         try:
-#            return getattr(self.server, verb)(*params)
-            return eval(cmd)
+            return getattr(self.server, verb)(*params)
         except xmlrpclib.Error as e:
-            raise NitrateXmlrpcError(verb, params, e)
+            raise NitrateXmlrpcError(verb, str(params), e)
 
     ############################## Build #######################################
 
