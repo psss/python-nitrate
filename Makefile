@@ -31,6 +31,10 @@ build:
 
 tarball: build
 	cd $(TMP) && tar cfj SOURCES/$(PACKAGE).tar.bz2 $(PACKAGE)
+	@echo ./tmp/SOURCES/$(PACKAGE).tar.bz2
+
+version:
+	@echo "$(VERSION)"
 
 rpm: tarball
 	rpmbuild --define '_topdir $(TMP)' -bb python-nitrate.spec
