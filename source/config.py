@@ -163,7 +163,11 @@ class Logging(object):
                 level = color(" " + levelname + " ", "lightwhite", colour)
             else:
                 level = "[{0}]".format(levelname)
-            return u"{0} {1}".format(level, record.getMessage())
+            try:
+                message = u"{0}".format(record.getMessage())
+            except UnicodeDecodeError:
+                message = record.getMessage().decode('utf-8', errors='replace')
+            return u"{0} {1}".format(level, message)
 
     @staticmethod
     def _create_logger():
