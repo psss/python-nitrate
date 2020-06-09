@@ -1,6 +1,6 @@
 Name: python-nitrate
-Version: 1.5
-Release: 4%{?dist}
+Version: 1.6
+Release: 1%{?dist}
 
 Summary: Python API for the Nitrate test case management system
 License: LGPLv2+
@@ -126,6 +126,16 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrat
 %license LICENSE
 
 %changelog
+* Tue Jun 09 2020 Petr Šplíchal <psplicha@redhat.com> - 1.6-1
+- Handle wrongly encoded messages in log [fix #20]
+- Make teiid Python 3 compatible [fix #13]
+- Better solving the do_command() bug
+- Bringing back eval() - workaround for XMLRPC
+- Output nicer tracebacks on connection failures
+- Enable automated python dependecies generator
+- Last spec file changes for RHEL7 (hopefully)
+- For older releases build both python2 and python3
+
 * Thu Nov 21 2019 Petr Šplíchal <psplicha@redhat.com> - 1.5-4
 - Fix requires (no python2-gssapi and python2-psycopg2 in RHEL7).
 - Enable automated python dependecies generator
