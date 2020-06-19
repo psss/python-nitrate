@@ -261,7 +261,7 @@ class Cache(object):
         for current_class in self._classes:
             # Put container classes into id-sleep
             if issubclass(current_class, containers.Container):
-                for container in current_class._cache.itervalues():
+                for container in current_class._cache.values():
                     container._sleep()
             data[current_class.__name__] = current_class._cache
 
@@ -332,7 +332,7 @@ class Cache(object):
                         "with empty".format(current_class.__name__))
                 current_class._cache = {}
             # Wake up container objects from the id-sleep
-            for container in current_class._cache.itervalues():
+            for container in current_class._cache.values():
                 container._wake()
         # Clear expired items and give a short summary for debugging
         self.expire()
@@ -424,7 +424,7 @@ class Cache(object):
                     listed([klass.__name__ for klass in classes])))
         # For each class re-initialize objects and remove from index
         for current_class in classes:
-            for current_object in current_class._cache.values():
+            for current_object in list(current_class._cache.values()):
                 # Reset the object to the initial state
                 current_object._init()
             current_class._cache = {}
@@ -441,7 +441,7 @@ class Cache(object):
 
         for current_class in self._classes:
             expired = []
-            for id, current_object in current_class._cache.iteritems():
+            for id, current_object in current_class._cache.items():
                 expire = False
                 # Check if object is uninitialized
                 if (current_object._id is NitrateNone or
@@ -497,7 +497,7 @@ class Cache(object):
         by default set to 10 object per session."""
 
         for klass in self._mutable + self._containers:
-            modified = [mutable for mutable in klass._cache.itervalues()
+            modified = [mutable for mutable in klass._cache.values()
                     if mutable._modified]
             if not modified:
                 continue
@@ -516,6 +516,6 @@ class Cache(object):
         for current_class in sorted(self._classes, key=lambda x: x.__name__):
             result += "{0}{1}       {2}\n".format(
                    current_class.__name__.ljust(15),
-                   str(len(set(current_class._cache.itervalues()))).rjust(7),
+                   str(len(set(current_class._cache.values()))).rjust(7),
                    human(current_class._expiration))
         return result
