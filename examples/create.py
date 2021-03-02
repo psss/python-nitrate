@@ -19,7 +19,7 @@ nitrate.set_color_mode(nitrate.COLOR_AUTO)
 # Initialize an existing test plan
 info("Initializing an existing test plan")
 general_plan = nitrate.TestPlan(3781)
-print general_plan
+print(general_plan)
 
 # Logging, catching errors
 nitrate.set_log_level(nitrate.LOG_INFO)
@@ -27,14 +27,14 @@ info("Initializing a bad test plan")
 try:
     log.info("Inspecting the test plan")
     bad_plan = nitrate.TestPlan(1)
-    print bad_plan
-except nitrate.NitrateError, error:
+    print(bad_plan)
+except nitrate.NitrateError as error:
     log.error("Bad test plan id ({0})".format(error))
 
 # Iterate over all test plan's test cases
 info("Inspecting test plan's test cases")
 for testcase in general_plan:
-    print testcase
+    print(testcase)
 
 # Create a new test plan
 info("Creating a new test plan")
@@ -73,7 +73,7 @@ testcase.update()
 # List all general plan's children including their status
 info("Listing child test plans of the general test plan")
 for testplan in general_plan.children:
-    print testplan, testplan.status
+    print(testplan, testplan.status)
 
 # Create a new test run
 info("Creating a new test run")
@@ -87,11 +87,11 @@ info("Scheduling performance tests")
 for caserun in testrun:
     if (caserun.status == nitrate.Status("IDLE")
             and str(caserun.testcase.category) == "Performance"):
-        print caserun.testcase.script, caserun.testcase.arguments
+        print(caserun.testcase.script, caserun.testcase.arguments)
         caserun.status = nitrate.Status("RUNNING")
         caserun.update()
 
 # Check case run status of the whole test run
 info("Checking case run status")
 for caserun in testrun:
-    print caserun
+    print(caserun)
