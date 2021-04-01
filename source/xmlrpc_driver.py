@@ -213,8 +213,8 @@ class NitrateXmlrpc(object):
     """
     @classmethod
     def from_config(cls, filename):
-        from ConfigParser import SafeConfigParser
-        cp = SafeConfigParser()
+        from ConfigParser import ConfigParser
+        cp = ConfigParser()
         cp.read([filename])
         kwargs = dict(
             [(key, cp.get('nitrate', key)) for key in [

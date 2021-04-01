@@ -270,7 +270,7 @@ class Config(object):
 
         # Parse the config
         try:
-            parser = ConfigParser.SafeConfigParser()
+            parser = ConfigParser.ConfigParser()
             parser.read([self.path])
             for section in parser.sections():
                 # Create a new section object for each section
