@@ -139,11 +139,11 @@ def color(text, color=None, background=None, light=False, enabled=True):
 def human(time):
     """ Convert timedelta into a human readable format """
     count = {}
-    count["year"] = time.days / 365
-    count["month"] = (time.days - 365 * count["year"]) / 30
+    count["year"] = time.days // 365
+    count["month"] = (time.days - 365 * count["year"]) // 30
     count["day"] = 0 if count["year"] > 0 else time.days % 30
-    count["hour"] = time.seconds / 3600
-    count["minute"] = (time.seconds - 3600 * count["hour"]) / 60
+    count["hour"] = time.seconds // 3600
+    count["minute"] = (time.seconds - 3600 * count["hour"]) // 60
     count["second"] = (
             time.seconds - 3600 * count["hour"] - 60 * count["minute"])
     return listed([
