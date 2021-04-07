@@ -1,5 +1,5 @@
 Name: python-nitrate
-Version: 1.6
+Version: 1.7
 Release: 1%{?dist}
 
 Summary: Python API for the Nitrate test case management system
@@ -126,6 +126,15 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrat
 %license LICENSE
 
 %changelog
+* Wed Apr 07 2021 Martin Zelený <mzeleny@redhat.com> - 1.7-1
+- Fix float as a parameter of the listed() function
+- Solve DeprecationWarning
+- Make examples usable with Python 3
+- Enable copr builds on commits in the master branch
+- Merge the Packit config and Makefile changes
+- Enable custom create archive for packit
+- Porting cache.py to Python 3
+
 * Tue Jun 09 2020 Petr Šplíchal <psplicha@redhat.com> - 1.6-1
 - Handle wrongly encoded messages in log [fix #20]
 - Make teiid Python 3 compatible [fix #13]
