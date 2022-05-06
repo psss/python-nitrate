@@ -1148,7 +1148,7 @@ class Bug(Nitrate):
     _attributes = ["bug", "system", "testcase", "caserun"]
 
     # Prefixes for bug systems, identifier width
-    _prefixes = {1: "BZ"}
+    _prefixes = {1: "BZ", 2: ""}
     _identifier_width = 7
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1215,12 +1215,17 @@ class Bug(Nitrate):
             prefix = self._prefixes[self.system]
         except KeyError:
             prefix = "BZ"
-        return u"{0}#{1}".format(prefix, str(self.bug).rjust(
-                self._identifier_width, "0"))
+        # Fill with zeros to identifier width if prefix provided
+        if prefix:
+            return u"{0}#{1}".format(
+                prefix, str(self.bug).rjust(self._identifier_width, "0"))
+        # Return a plain bug id if there is no prefix
+        else:
+            return u"{0}".format(self.bug)
 
     def __hash__(self):
         """ Construct the uniqe hash from bug id and bug system id """
-        return _idify([self.system, self.bug])
+        return _idify([self.system, self._bug_as_int])
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #  Bug Methods
@@ -1234,7 +1239,13 @@ class Bug(Nitrate):
             raise NotImplementedError("Direct bug fetching not implemented")
         # Process provided inject
         self._id = int(inject["id"])
-        self._bug = int(inject["bug_id"])
+        self._bug = inject["bug_id"]
+        try:
+            self._bug_as_int = int(self._bug)
+        except ValueError:
+            self._bug_as_int = 0
+            for char in self._bug:
+                self._bug_as_int = self._bug_as_int * 256 + ord(char)
         self._system = int(inject["bug_system_id"])
         self._testcase = TestCase(int(inject["case_id"]))
         if inject["case_run_id"] is not None:
