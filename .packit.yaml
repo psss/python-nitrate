@@ -15,6 +15,7 @@ jobs:
   metadata:
     targets:
     - fedora-all
+    - epel-9
     - epel-8
     - epel-7
   trigger: pull_request
@@ -22,9 +23,10 @@ jobs:
 - job: copr_build
   trigger: commit
   metadata:
-    branch: master
+    branch: main
     targets:
     - fedora-all
+    - epel-9
     - epel-8
     - epel-7
     list_on_homepage: True
