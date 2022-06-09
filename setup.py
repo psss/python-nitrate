@@ -11,14 +11,13 @@ description = 'Python API for the Nitrate test case management system'
 with open("README") as readme:
     long_description = readme.read()
 
-# Parse version and release from master spec file
+# Parse version from the spec file
 with open("python-nitrate.spec") as specfile:
     lines = "\n".join(line.rstrip() for line in specfile)
     version = re.search('Version: (.+)', lines).group(1).rstrip()
-    release = re.search('Release: (\d+)', lines).group(1).rstrip()
 
 setup(name='nitrate',
-      version='{0}'.format('.'.join([version, release])),
+      version=version,
       packages=['nitrate'],
       package_dir={'nitrate': 'source'},
       scripts=['source/nitrate'],
