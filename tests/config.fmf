@@ -1,0 +1,6 @@
+summary: Suggest creating config
+test: |
+    set +o pipefail
+    command="import nitrate; print(nitrate.TestCase(1234))"
+    message="Please, provide at least a minimal config"
+    python -c "$command" 2>&1 | grep "$message"

@@ -1,0 +1,4 @@
+summary: Check man pages
+test: |
+    man nitrate | grep "Command line interpreter for the Nitrate Python API"
+    man python-nitrate | grep "Python API for the Nitrate test case management system"

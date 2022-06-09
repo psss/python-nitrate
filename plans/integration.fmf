@@ -1,0 +1,22 @@
+summary: Run integration test with tmt
+discover:
+    how: fmf
+    url: https://github.com/teemtee/tmt
+    filter: 'tag: integration'
+prepare:
+  - name: Install pip & tmt
+    how: install
+    package:
+      - python3-pip
+      - tmt
+      - tmt-test-convert
+  - name: Install requre
+    script: pip3 install "typing-extensions>=3.7.4.3" requre
+  - name: Create default nitrate config
+    script: "test -e ~/.nitrate || echo -en '[nitrate]\nurl = https://nitrate.server/xmlrpc/\n' | tee ~/.nitrate"
+execute:
+    how: tmt
+adjust:
+    enabled: false
+    when: distro == centos-7
+    because: there is no tmt
