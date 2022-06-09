@@ -1151,6 +1151,9 @@ class Bug(Nitrate):
     _prefixes = {1: "BZ", 2: ""}
     _identifier_width = 7
 
+    # Integer version of the bug identifier used for hash()
+    _bug_int = None
+
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #  Bug Properties
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1191,11 +1194,31 @@ class Bug(Nitrate):
             self._fetch(inject)
         # Initialized by bug id and system id
         elif bug is not None and system is not None:
-            self._bug = bug
+            self._process_bug_id(bug)
             self._system = system
         # Otherwise just check that the id was provided
         elif id is None:
             raise NitrateError("Need bug id to initialize the Bug object.")
+
+    def _process_bug_id(self, bug_id):
+        """
+        Correctly handle 'str' and 'int' formats of bug identifiers
+
+        Make sure that bug id integers stored in strings are converted.
+        This is needed for reliable comparison in sets. For string
+        identifiers generate a unique integer value for hash().
+        """
+        # Convert id integers stored in strings
+        try:
+            self._bug = self._bug_int = int(bug_id)
+        except (ValueError, TypeError):
+            if not isinstance(bug_id, str):
+                raise NitrateError("Invalid bug id '{0}'.".format(bug_id))
+            # Handle string identifiers
+            self._bug = bug_id
+            self._bug_int = 0
+            for char in bug_id:
+                self._bug_int = self._bug_int * 256 + ord(char)
 
     def __eq__(self, other):
         """
@@ -1225,7 +1248,7 @@ class Bug(Nitrate):
 
     def __hash__(self):
         """ Construct the uniqe hash from bug id and bug system id """
-        return _idify([self.system, self._bug_as_int])
+        return _idify([self.system, self._bug_int])
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #  Bug Methods
@@ -1239,13 +1262,7 @@ class Bug(Nitrate):
             raise NotImplementedError("Direct bug fetching not implemented")
         # Process provided inject
         self._id = int(inject["id"])
-        self._bug = inject["bug_id"]
-        try:
-            self._bug_as_int = int(self._bug)
-        except ValueError:
-            self._bug_as_int = 0
-            for char in self._bug:
-                self._bug_as_int = self._bug_as_int * 256 + ord(char)
+        self._process_bug_id(inject["bug_id"])
         self._system = int(inject["bug_system_id"])
         self._testcase = TestCase(int(inject["case_id"]))
         if inject["case_run_id"] is not None:

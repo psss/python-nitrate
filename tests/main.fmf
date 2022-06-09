@@ -1,5 +1,5 @@
 require: python3-nitrate
 
 adjust:
-    require: python2-nitrate
+  - require: python2-nitrate
     when: distro == centos-7
