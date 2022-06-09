@@ -1,5 +1,5 @@
 Name: python-nitrate
-Version: 1.8
+Version: 1.8.2
 Release: 1%{?dist}
 
 Summary: Python API for the Nitrate test case management system
@@ -126,6 +126,11 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrat
 %license LICENSE
 
 %changelog
+* Thu Jun 09 2022 Petr Šplíchal <psplicha@redhat.com> - 1.8.2-1
+- Do not use the spec release for the pip version
+- Properly handle string bug identifiers
+- Enable basic sanity and integration tests
+
 * Wed Jun 08 2022 Petr Šplíchal <psplicha@redhat.com> - 1.8-1
 - Nitrate Bug id can be string (for e.g. Jira)
 
