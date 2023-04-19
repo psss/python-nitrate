@@ -11,6 +11,14 @@ actions:
   - make version
 
 jobs:
+- job: copr_build
+  trigger: pull_request
+  targets:
+  - fedora-all
+  - epel-9
+  - epel-8
+  - epel-7
+
 - job: tests
   trigger: pull_request
   metadata:
