@@ -21,25 +21,23 @@ jobs:
 
 - job: tests
   trigger: pull_request
-  metadata:
-    targets:
-    - fedora-all
-    - epel-9
-    - epel-8
-    - epel-7
-    enable_net: False
+  targets:
+  - fedora-all
+  - epel-9
+  - epel-8
+  - epel-7
+  enable_net: False
 
 - job: copr_build
   trigger: commit
-  metadata:
-    branch: main
-    targets:
-    - fedora-all
-    - epel-9
-    - epel-8
-    - epel-7
-    enable_net: False
-    list_on_homepage: True
-    preserve_project: True
-    owner: psss
-    project: python-nitrate
+  branch: main
+  targets:
+  - fedora-all
+  - epel-9
+  - epel-8
+  - epel-7
+  enable_net: False
+  list_on_homepage: True
+  preserve_project: True
+  owner: psss
+  project: python-nitrate
