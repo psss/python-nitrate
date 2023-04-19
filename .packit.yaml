@@ -26,7 +26,6 @@ jobs:
   - epel-9
   - epel-8
   - epel-7
-  enable_net: False
 
 - job: copr_build
   trigger: commit
@@ -36,7 +35,6 @@ jobs:
   - epel-9
   - epel-8
   - epel-7
-  enable_net: False
   list_on_homepage: True
   preserve_project: True
   owner: psss
