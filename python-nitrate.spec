@@ -122,7 +122,7 @@ pathfix.py -pni "%{__python3} %{py3_shbang_opts}i" %{buildroot}%{_bindir}/nitrat
 %{python3_sitelib}/nitrate-*.egg-info/
 %{_mandir}/man1/*
 %{_bindir}/nitrate
-%doc README examples
+%doc README.rst examples
 %license LICENSE
 
 %changelog

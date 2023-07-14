@@ -8,7 +8,7 @@ from setuptools import setup
 
 # Prepare short and long description
 description = 'Python API for the Nitrate test case management system'
-with open("README") as readme:
+with open("README.rst") as readme:
     long_description = readme.read()
 
 # Parse version from the spec file
