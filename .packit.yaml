@@ -21,7 +21,6 @@ jobs:
   - fedora-all
   - epel-9
   - epel-8
-  - epel-7
 
 - job: tests
   trigger: pull_request
@@ -29,7 +28,6 @@ jobs:
   - fedora-all
   - epel-9
   - epel-8
-  - epel-7
 
 - job: copr_build
   trigger: commit
@@ -38,7 +36,6 @@ jobs:
   - fedora-all
   - epel-9
   - epel-8
-  - epel-7
   list_on_homepage: True
   preserve_project: True
   owner: psss
