@@ -9,7 +9,7 @@ prepare:
     package:
       - python3-pip
       - tmt
-      - tmt-test-convert
+      - tmt+test-convert
   - name: Install requre
     script: pip3 install "typing-extensions>=3.7.4.3" requre
   - name: Create default nitrate config
