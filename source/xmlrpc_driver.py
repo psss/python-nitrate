@@ -82,6 +82,16 @@ class CookieTransport(xmlrpclib.Transport):
             for h,v in cookielist:
                 connection.putheader(h,v)
 
+    # add cookies when Python 3 xmlrpc.client.Transport is used
+    def send_headers(self, connection, headers):
+        if self.cookiejar is None:
+            self.cookiejar = CookieJar()
+        elif self.cookiejar:
+            cookie_header =";".join([ f"{cookie.name}={cookie.value}" for cookie in self.cookiejar])
+            connection.putheader("Cookie", cookie_header)
+
+        super().send_headers(connection, headers)
+
     # This is just python 2.7's xmlrpclib.Transport.single_request, with
     # send additions noted below to send cookies along with the request
     def single_request_with_cookies(self, host, handler, request_body, verbose=0):
@@ -119,7 +129,6 @@ class CookieTransport(xmlrpclib.Transport):
                     raise
                     #log.error("Couldn't write cookiefile %s: %s" % \
                     #        (self.cookiejar.filename,str(e)))
-
             if response.status == 200:
                 self.verbose = verbose
                 return self.parse_response(response)
