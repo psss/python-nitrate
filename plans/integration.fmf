@@ -18,5 +18,5 @@ execute:
     how: tmt
 adjust:
     enabled: false
-    when: distro == centos-7
-    because: there is no tmt
+    when: distro == centos-7 or distro == centos-stream-8
+    because: tmt is not supported there
