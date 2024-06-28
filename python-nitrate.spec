@@ -1,5 +1,5 @@
 Name: python-nitrate
-Version: 1.8.2
+Version: 1.9.0
 Release: 1%{?dist}
 
 Summary: Python API for the Nitrate test case management system
@@ -127,6 +127,18 @@ install -pm 644 docs/*.1.gz %{buildroot}%{_mandir}/man1
 %license LICENSE
 
 %changelog
+* Thu Jun 27 2024 Petr Šplíchal <psplicha@redhat.com> - 1.9.0-1
+- Fix initializing version object by a version object (#48)
+- Send cookies with Python 3 as well
+- Rename required package, fix docs building & tests (#46)
+- Do not build and test on `epel-7` anymore
+- Use the `py3_shebang_fix` macro instead of `pathfix.py`
+- Add an explicit config for building readthedocs
+- Include srpm build requirements in Packit config
+- Remove 'enable_net' from Packit config
+- Remove 'metadata' from Packit config
+- Add missing build job(s) to Packit config
+
 * Thu Jun 09 2022 Petr Šplíchal <psplicha@redhat.com> - 1.8.2-1
 - Do not use the spec release for the pip version
 - Properly handle string bug identifiers
