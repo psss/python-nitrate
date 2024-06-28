@@ -565,7 +565,7 @@ class TestRun(Mutable):
         elif isinstance(version, int):
             version = Version(version)
         else:
-            version = Version(name=version, product=product)
+            version = Version(name=str(version), product=product)
         hash["product_version"] = version.id
 
         # Build & errata
