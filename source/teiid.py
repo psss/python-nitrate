@@ -22,7 +22,7 @@
 Teiid support
 
 For enhanced query performance it's possible to use a Teiid instance.
-Use the following config snippet to enable access via psycopg2 module:
+Use the following config snippet to enable access via psycopg module:
 
     [teiid]
     user = username
@@ -32,7 +32,7 @@ Use the following config snippet to enable access via psycopg2 module:
     port = 5432
 """
 
-import psycopg2
+import psycopg
 
 from nitrate.config import log, Config
 from nitrate.xmlrpc_driver import NitrateError
@@ -74,9 +74,9 @@ class Teiid(object):
         log.debug("Connecting as {0} to database {1} at {2}:{3}".format(
                 user, database, host, port))
         try:
-            self.connection = psycopg2.connect(database=database,
+            self.connection = psycopg.connect(database=database,
                     user=user, password=password, host=host, port=port)
-        except psycopg2.DatabaseError as error:
+        except psycopg.DatabaseError as error:
             log.error("Teiid connect error: {0}".format(error))
             raise TeiidError("Failed to connect to the Teiid instance")
         self.connection.set_isolation_level(0)

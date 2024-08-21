@@ -28,7 +28,7 @@ setup(name='nitrate',
       license='LGPLv2+',
       install_requires=[
           'gssapi',
-          'psycopg2',
+          'psycopg',
           'six',
           ],
       url='https://psss.fedorapeople.org/python-nitrate/',

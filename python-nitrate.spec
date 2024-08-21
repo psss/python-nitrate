@@ -78,9 +78,10 @@ Summary: %{summary}
 %{?python_provide:%python_provide python3-nitrate}
 %if %{with oldreqs}
 Requires: python%{python3_pkgversion}-gssapi
-Requires: python%{python3_pkgversion}-psycopg2
+Requires: python%{python3_pkgversion}-psycopg3
 Requires: python%{python3_pkgversion}-six
 %endif
+Requires: libpq
 Conflicts: python2-nitrate < 1.5-3
 
 %description -n python%{python3_pkgversion}-nitrate %_description

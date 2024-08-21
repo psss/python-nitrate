@@ -58,7 +58,7 @@ Container overview (objects contained are listed in brackets):
 """
 
 import six
-import psycopg2
+import psycopg
 
 from six.moves import xmlrpc_client as xmlrpclib
 
@@ -842,7 +842,7 @@ class RunCases(Container):
             injects = self._teiid.run_cases(self.id)
         except teiid.TeiidNotConfigured:
             injects = self._server.TestRun.get_test_cases(self.id)
-        except psycopg2.DatabaseError as error:
+        except psycopg.DatabaseError as error:
             log.debug("Failed to fetch data from Teiid: {0}".format(error))
             injects = self._server.TestRun.get_test_cases(self.id)
         self._current = set([TestCase(inject) for inject in injects])
@@ -915,7 +915,7 @@ class RunCaseRuns(Container):
             injects = self._teiid.run_case_runs(self.id)
         except teiid.TeiidNotConfigured:
             injects = self._server.TestRun.get_test_case_runs(self.id)
-        except psycopg2.DatabaseError as error:
+        except psycopg.DatabaseError as error:
             log.debug("Failed to fetch data from Teiid: {0}".format(error))
             injects = self._server.TestRun.get_test_case_runs(self.id)
         # Feed the TestRun.testcases container with the initial object
