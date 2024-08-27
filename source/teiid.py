@@ -32,7 +32,10 @@ Use the following config snippet to enable access via psycopg module:
     port = 5432
 """
 
-import psycopg
+try:
+    import psycopg
+except (ImportError, ModuleNotFoundError):
+    import psycopg2 as psycopg
 
 from nitrate.config import log, Config
 from nitrate.xmlrpc_driver import NitrateError

@@ -58,20 +58,22 @@ Container overview (objects contained are listed in brackets):
 """
 
 import six
-import psycopg
 
-from six.moves import xmlrpc_client as xmlrpclib
+try:
+    import psycopg
+except (ImportError, ModuleNotFoundError):
+    import psycopg2 as psycopg
+
 
 import nitrate.config as config
 import nitrate.teiid as teiid
-
-from nitrate.config import log
-from nitrate.utils import pretty, listed, sliced
 from nitrate.base import Nitrate, NitrateNone, _getter, _idify
-from nitrate.immutable import Component, Bug, Tag
+from nitrate.config import log
+from nitrate.immutable import Bug, Component, Tag
+from nitrate.mutable import CasePlan, CaseRun, Mutable, TestCase, TestPlan, TestRun
+from nitrate.utils import listed, pretty, sliced
 from nitrate.xmlrpc_driver import NitrateError
-from nitrate.mutable import (
-        Mutable, TestPlan, TestRun, TestCase, CaseRun, CasePlan)
+from six.moves import xmlrpc_client as xmlrpclib
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Container Class

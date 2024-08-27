@@ -3,3 +3,6 @@ source/version.py
 dist
 nitrate.egg-info/
 *~
+build
+venv
+.venv
