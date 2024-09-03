@@ -26,14 +26,7 @@ for fast debugging and experimenting).}
 %package -n python%{python3_pkgversion}-nitrate
 Summary: %{summary}
 %{?python_provide:%python_provide python3-nitrate}
-Requires: python%{python3_pkgversion}-gssapi
-Requires: python%{python3_pkgversion}-six
-Requires: libpq
-%if 0%{?rhel} == 8
-Requires: python%{python3_pkgversion}-psycopg2
-%else
-Requires: python%{python3_pkgversion}-psycopg3
-%endif
+
 
 %description -n python%{python3_pkgversion}-nitrate %_description
 
