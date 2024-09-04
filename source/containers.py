@@ -58,20 +58,22 @@ Container overview (objects contained are listed in brackets):
 """
 
 import six
-import psycopg2
 
-from six.moves import xmlrpc_client as xmlrpclib
+try:
+    import psycopg
+except (ImportError, ModuleNotFoundError):
+    import psycopg2 as psycopg
+
 
 import nitrate.config as config
 import nitrate.teiid as teiid
-
-from nitrate.config import log
-from nitrate.utils import pretty, listed, sliced
 from nitrate.base import Nitrate, NitrateNone, _getter, _idify
-from nitrate.immutable import Component, Bug, Tag
+from nitrate.config import log
+from nitrate.immutable import Bug, Component, Tag
+from nitrate.mutable import CasePlan, CaseRun, Mutable, TestCase, TestPlan, TestRun
+from nitrate.utils import listed, pretty, sliced
 from nitrate.xmlrpc_driver import NitrateError
-from nitrate.mutable import (
-        Mutable, TestPlan, TestRun, TestCase, CaseRun, CasePlan)
+from six.moves import xmlrpc_client as xmlrpclib
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #  Container Class
@@ -842,7 +844,7 @@ class RunCases(Container):
             injects = self._teiid.run_cases(self.id)
         except teiid.TeiidNotConfigured:
             injects = self._server.TestRun.get_test_cases(self.id)
-        except psycopg2.DatabaseError as error:
+        except psycopg.DatabaseError as error:
             log.debug("Failed to fetch data from Teiid: {0}".format(error))
             injects = self._server.TestRun.get_test_cases(self.id)
         self._current = set([TestCase(inject) for inject in injects])
@@ -915,7 +917,7 @@ class RunCaseRuns(Container):
             injects = self._teiid.run_case_runs(self.id)
         except teiid.TeiidNotConfigured:
             injects = self._server.TestRun.get_test_case_runs(self.id)
-        except psycopg2.DatabaseError as error:
+        except psycopg.DatabaseError as error:
             log.debug("Failed to fetch data from Teiid: {0}".format(error))
             injects = self._server.TestRun.get_test_case_runs(self.id)
         # Feed the TestRun.testcases container with the initial object
