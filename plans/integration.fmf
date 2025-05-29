@@ -17,6 +17,11 @@ prepare:
 execute:
     how: tmt
 adjust:
-    enabled: false
-    when: distro == centos-7 or distro == centos-stream-8
+  - enabled: false
+    when: distro == centos-stream-8
     because: tmt is not supported there
+
+    # TODO Remove once tmt is built for epel-10
+  - enabled: false
+    when: distro == centos-stream-10
+    because: https://github.com/teemtee/tmt/pull/3234
