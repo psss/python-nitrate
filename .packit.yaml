@@ -2,7 +2,7 @@ upstream_package_name: python-nitrate
 downstream_package_name: python-nitrate
 
 specfile_path: python-nitrate.spec
-synced_files: [python-nitrate.spec]
+files_to_sync: [python-nitrate.spec]
 
 actions:
   create-archive:
@@ -19,6 +19,7 @@ jobs:
   trigger: pull_request
   targets:
   - fedora-all
+  - epel-10
   - epel-9
   - epel-8
 
@@ -26,6 +27,7 @@ jobs:
   trigger: pull_request
   targets:
   - fedora-all
+  - epel-10
   - epel-9
   - epel-8
 
@@ -34,6 +36,7 @@ jobs:
   branch: main
   targets:
   - fedora-all
+  - epel-10
   - epel-9
   - epel-8
   list_on_homepage: True
