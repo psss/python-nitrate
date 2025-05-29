@@ -3,7 +3,7 @@ Version: 1.9.0
 Release: 1%{?dist}
 
 Summary: Python API for the Nitrate test case management system
-License: LGPLv2+
+License: LGPL-2.1-only
 
 URL: https://github.com/psss/python-nitrate
 Source0: %{url}/releases/download/%{version}/%{name}-%{version}.tar.bz2
